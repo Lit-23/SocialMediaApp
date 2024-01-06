@@ -2,6 +2,7 @@ import { AppBar, Box, styled, Menu, IconButton, Toolbar, Tooltip, Typography, Ba
 import { Adb, Mail, Notifications } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const StyledToolbar = styled(Toolbar)(({theme}) => ({
   display:"flex",
@@ -34,11 +35,14 @@ const NavBar = () => {
   };
   const handleClose = () => {
     setOpen(false);
-  }
+  };
+  const navigate = useNavigate();
   return (
     <AppBar position="sticky">
       <StyledToolbar>
         <Typography 
+          onClick={()=>navigate('/')}
+          variant="h6" 
           sx={{
             "&:hover":{
               cursor:"pointer", 
@@ -49,11 +53,11 @@ const NavBar = () => {
               sm:"block"
             }
           }} 
-          variant="h6" 
         >
           LitFlix
         </Typography>
         <Adb 
+          onClick={()=>navigate('/')}
           sx={{
             "&:hover":{
               cursor:"pointer", 
@@ -95,7 +99,7 @@ const NavBar = () => {
               </Box>
             : <Box sx={{ display:"flex", gap:1 }}>
                 <StyledTypography>Register</StyledTypography>
-                <StyledTypography>Login</StyledTypography>
+                <StyledTypography>Signin</StyledTypography>
               </Box>
         }
       </StyledToolbar>

@@ -1,14 +1,18 @@
-import { Box } from '@mui/material';
-import NavBar from './components/NavBar';
-
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from "./Layout";
+import Register from "./authentication/Register";
+import Signin from "./authentication/Signin";
 function App() {
 
   return (
-    <>
-      <Box>
-        <NavBar />
-      </Box>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<Layout />}>
+          <Route path="/register" element={<Register/>}/>
+          <Route path="/" element={<Signin/>}/>
+        </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
 
