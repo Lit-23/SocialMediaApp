@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./Layout";
 import Register from "./authentication/Register";
 import Signin from "./authentication/Signin";
+import MainPage from "./Pages/MainPage";
 function App() {
 
   return (
@@ -9,7 +10,8 @@ function App() {
       <Routes>
         <Route path='/' element={<Layout />}>
           <Route path="/register" element={<Register/>}/>
-          <Route path="/" element={<Signin/>}/>
+          <Route path="/signin" element={<Signin/>}/>
+          <Route index element={<MainPage/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

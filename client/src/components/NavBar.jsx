@@ -28,7 +28,7 @@ const StyledTypography = styled(Typography)(({theme}) => ({
 }))
 
 const NavBar = () => {
-  const [authenticated, setAuthenticated] = useState(false);
+  const [authenticated, setAuthenticated] = useState(true);
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
     setOpen(true);
@@ -98,8 +98,12 @@ const NavBar = () => {
                 </Box>
               </Box>
             : <Box sx={{ display:"flex", gap:1 }}>
-                <StyledTypography>Register</StyledTypography>
-                <StyledTypography>Signin</StyledTypography>
+                <StyledTypography onClick={()=>navigate('/register')}>
+                  Register
+                </StyledTypography>
+                <StyledTypography onClick={()=>navigate('/')}>
+                  Signin
+                </StyledTypography>
               </Box>
         }
       </StyledToolbar>
