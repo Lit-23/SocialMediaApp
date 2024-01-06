@@ -1,9 +1,8 @@
-import { Box, Stack } from '@mui/material'
-import React from 'react'
-import Sidebar from '../components/Sidebar'
-import Feed from '../components/Feed'
-import Rightbar from '../components/Rightbar'
-import AddPost from '../components/AddPost'
+import { Box, Stack } from '@mui/material';
+import Sidebar from '../components/Sidebar/Sidebar';
+import Feed from '../components/Feed/Feed';
+import Rightbar from '../components/Rightbar/Rightbar';
+import AddPost from '../components/Feed/AddPost';
 
 const MainPage = () => {
   return (

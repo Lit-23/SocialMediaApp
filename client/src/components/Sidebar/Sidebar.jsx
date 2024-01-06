@@ -3,7 +3,7 @@ import { AccountBox, Description, Group, Home, Mail, ModeNight, Person, Settings
 
 const Sidebar = () => {
   return (
-    <Box flex='1'>
+    <Box flex='1' display={{xs:'none', lg:'block'}}>
       <Box position='fixed'>
         <List>
           <ListItem disablePadding>
