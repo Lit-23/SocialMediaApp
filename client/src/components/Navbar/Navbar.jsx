@@ -3,6 +3,7 @@ import { Adb, Mail, Notifications } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import MessagesCard from '../message/MessagesCard';
 
 const StyledToolbar = styled(Toolbar)(({theme}) => ({
   display:"flex",
@@ -29,13 +30,28 @@ const StyledTypography = styled(Typography)(({theme}) => ({
 
 const NavBar = () => {
   const [authenticated, setAuthenticated] = useState(true);
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => {
-    setOpen(true);
+
+  // state for MessagesCard modal
+  const [openModal, setOpenModal] = useState(false);
+
+  // state for notifications menu
+  const [openNotificationsMenu, setOpenNotificationsMenu] = useState(false);
+  const handleOpenNotifications = () => {
+    setOpenNotificationsMenu(true);
   };
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseNotifications = () => {
+    setOpenNotificationsMenu(false);
   };
+
+  // state & functionality for avatarMenu
+  const [openAvatarMenu, setOpenAvatarMenu] = useState(false);
+  const handleOpenAvatar = () => {
+    setOpenAvatarMenu(true);
+  };
+  const handleCloseAvatar = () => {
+    setOpenAvatarMenu(false);
+  };
+
   const navigate = useNavigate();
   return (
     <AppBar position="sticky">
@@ -74,21 +90,21 @@ const NavBar = () => {
             ? <Box>
                 <Icons>
                   <Tooltip title="Messages">
-                    <IconButton>
-                      <Badge badgeContent={2} color="error">
+                    <IconButton onClick={e=>setOpenModal(true)}>
+                      <Badge badgeContent={3} color="error">
                         <Mail sx={{color:["white"]}}/>
                       </Badge>
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Notifications">
-                    <IconButton>
+                    <IconButton onClick={handleOpenNotifications}>
                       <Badge badgeContent={4} color="error">
                         <Notifications sx={{color:["white"]}}/>
                       </Badge>
                     </IconButton>
                   </Tooltip>
                   <Tooltip title="Account">
-                    <IconButton onClick={handleOpen}>
+                    <IconButton onClick={handleOpenAvatar}>
                       <Avatar sx={{height:30, width:30}} alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
                     </IconButton>
                   </Tooltip>
@@ -107,11 +123,16 @@ const NavBar = () => {
               </Box>
         }
       </StyledToolbar>
+
+      {/* MessagesCard Modal */}
+      <MessagesCard open={openModal} setOpen={setOpenModal}/>
+
+      {/* Notifications menu */}
       <Menu
         id="demo-positioned-menu"
         aria-labelledby="demo-positioned-button"
-        open={open}
-        onClose={handleClose}
+        open={openNotificationsMenu}
+        onClose={(handleCloseNotifications)}
         anchorOrigin={{
           vertical: 'top',
           horizontal: 'right',
@@ -120,12 +141,35 @@ const NavBar = () => {
           vertical: 'top',
           horizontal: 'right',
         }}
-        sx={{mt:"30px"}}
+        sx={{mt:"35px"}}
       >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
-        <MenuItem onClick={handleClose}>Logout</MenuItem>
+        <MenuItem onClick={handleCloseAvatar}>You have unread messages...</MenuItem>
+        <MenuItem onClick={handleCloseAvatar}>New friend suggestion!</MenuItem>
+        <MenuItem onClick={handleCloseAvatar}>New Message.</MenuItem>
+        <MenuItem onClick={handleCloseAvatar}>Your friend liked your post.</MenuItem>
       </Menu>
+
+      {/* Avatar menu */}
+      <Menu
+        id="demo-positioned-menu"
+        aria-labelledby="demo-positioned-button"
+        open={openAvatarMenu}
+        onClose={(handleCloseAvatar)}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        sx={{mt:"35px", right:"50px"}}
+      >
+        <MenuItem onClick={handleCloseAvatar}>Profile</MenuItem>
+        <MenuItem onClick={handleCloseAvatar}>My account</MenuItem>
+        <MenuItem onClick={handleCloseAvatar}>Logout</MenuItem>
+      </Menu>
+
     </AppBar>
   )
 }

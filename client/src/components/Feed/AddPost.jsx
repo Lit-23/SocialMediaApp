@@ -25,7 +25,7 @@ const AddPost = () => {
   return (
     <>
       {/* Tooltip */}
-      <Box position='fixed' bottom={20} left={{xs:'calc(50% - 28px)', lg:20}}>
+      <Box position='fixed' bottom={20} left={{xs:'calc(50% - 28px)', md:20}}>
         <Tooltip title="Add New Post">
           <Fab color="primary" onClick={handleOpen}>
             <Add />
@@ -40,7 +40,7 @@ const AddPost = () => {
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
-        <Box component='form' bgcolor='white' width={400} height={315} borderRadius={2} padding={3} gap={5}>
+        <Box component='form' bgcolor='white' width={400} borderRadius={2} padding={3} gap={5}>
           <Typography variant="h6" component="h2" color='gray' fontWeight={400} textAlign='center' mb={1}>
             Create Post
           </Typography>

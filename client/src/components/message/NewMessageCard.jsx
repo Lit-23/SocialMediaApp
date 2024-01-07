@@ -40,7 +40,7 @@ const NewMessageCard = () => {
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
-        <Box component='form' bgcolor='white' width={400} height={315} borderRadius={2} padding={3} gap={5}>
+        <Box component='form' bgcolor='white' width={400} borderRadius={2} padding={3} gap={5}>
           <Typography variant="h6" component="h2" color='gray' fontWeight={400} textAlign='center' mb={1}>
             New Message
           </Typography>
