@@ -1,8 +1,10 @@
-import { Google } from "@mui/icons-material"
-import { Box, Button, Card, CardContent, Divider, Stack, TextField, Typography } from "@mui/material"
+import { Google } from "@mui/icons-material";
+import { Box, Button, Card, CardContent, Divider, Stack, TextField, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 
 const Signin = () => {
+  const navigate = useNavigate();
   return (
     <Box sx={{display:'flex', justifyContent:'center'}}>
       <Card sx={{ margin:5, padding:1, width:'100%', maxWidth:'600px' }}>
@@ -45,7 +47,7 @@ const Signin = () => {
               </Button>
               <Box color='gray' display='flex' justifyContent='center' gap={1}>
                 <Typography textAlign='center'>Dont have an account yet?</Typography>
-                <Typography sx={{"&:hover":{cursor:'pointer', textDecoration:'underline', transition: 'text-decoration 0.3s ease'}}} color='primary'>Signup</Typography>
+                <Typography sx={{"&:hover":{cursor:'pointer', textDecoration:'underline', transition: 'text-decoration 0.3s ease'}}} color='primary' onClick={()=>{navigate('/register')}}>Signup</Typography>
               </Box>
             </Stack>
           </Box>
