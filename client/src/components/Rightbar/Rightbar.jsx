@@ -4,8 +4,8 @@ import Contacts from './Contacts';
 
 const Rightbar = () => {
   return (
-    <Box flex='2' display={{xs:'none', md:'block'}}>
-      <Box position='fixed' minWidth={300}>
+    <Box flex='1' display={{xs:'none', md:'block'}}>
+      <Box position='fixed'>
         <Stack spacing={2}>
           <ActiveFriends/>
           <Divider/>
