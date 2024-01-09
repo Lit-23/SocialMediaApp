@@ -8,7 +8,7 @@ import Signin from '../authentication/Signin';
 import { useState } from 'react';
 
 const MainPage = () => {
-  const [authenticated, setAuthenticated] = useState(true);
+  const [authenticated, setAuthenticated] = useState(false);
 
   return (
     <>
@@ -23,7 +23,7 @@ const MainPage = () => {
           <AddPost/>
           <NewMessageCard/>
           </Box>
-        : <Signin/>
+        : <Signin setAuthenticated={setAuthenticated}/>
       }
     </>
   )
