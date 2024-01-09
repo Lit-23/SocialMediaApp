@@ -1,10 +1,60 @@
 import { Google } from "@mui/icons-material";
 import { Box, Button, Card, CardContent, Divider, Stack, TextField, Typography } from "@mui/material";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 
 const Register = () => {
+  const [formData, setFormData] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value })
+  };
+  console.log(formData)
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if(formData.password === formData.confirmPassword) {
+      try {
+        setLoading(true);
+        if(loading) {
+          Swal.showLoading();
+        } else {
+          Swal.hideLoading();
+        };
+
+        // fetch data
+        const res = await fetch(`/api/user/signup`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(formData)
+        });
+        const data = await res.json();
+
+        // signup failure
+        if(data.success === false) {
+          setError(true);
+          setLoading(false);
+          return;
+        };      
+        // navigate to signin page
+        setLoading(false);
+        navigate('/');
+
+      } catch (error) {
+        setError(true);
+      }
+    } else {
+      setError(true);
+    };
+  };
+
   return (
     <Box sx={{display:'flex', justifyContent:'center'}}>
       <Card sx={{ margin:5, padding:1, width:'100%', maxWidth:'600px' }}>
@@ -12,7 +62,7 @@ const Register = () => {
           <Typography variant="h5" color='gray' fontWeight={300}  textAlign="center" mb={3}>
             Register
           </Typography>
-          <Box component='form'>
+          <Box component="form" onSubmit={handleSubmit}>
             <Stack spacing={2}>
               <Stack gap={2} direction={{sm:'row', xs:'col'}}>
                 <TextField
@@ -20,12 +70,16 @@ const Register = () => {
                   sx={{width:'100%'}}
                   id="firstName"
                   label="FirstName"
+                  defaultValue={formData.firstName}
+                  onChange={handleChange}
                 />
                 <TextField
                   required
                   sx={{width:'100%'}}
                   id="lastName"
                   label="LastName"
+                  defaultValue={formData.lastName}
+                  onChange={handleChange}
                 />
               </Stack>
               <TextField
@@ -35,6 +89,8 @@ const Register = () => {
                 id="email"
                 label="Email"
                 placeholder="example@email"
+                defaultValue={formData.email}
+                onChange={handleChange}
               />
               <TextField
                 required
@@ -42,14 +98,23 @@ const Register = () => {
                 sx={{width:'100%'}}
                 id="password"
                 label="Password"
+                defaultValue={formData.password}
+                onChange={handleChange}
               />
               <TextField
-                required
                 type="password"
                 sx={{width:'100%'}}
                 id="confirmPassword"
                 label="Confirm Password"
+                defaultValue={formData.confirmPassword}
+                onChange={handleChange}
               />
+              {
+                error && <Typography variant="p" color="error" marginX={5} marginBottom={3}>Something went wrong!</Typography>
+                // ?  <p className='text-red-700 mx-5 mb-3'>{error.message}</p>
+                // || <p className='text-red-700 mx-5 mb-3'>Something went wrong!</p>
+                // :  ''
+              }
               <Button 
                 type="submit" 
                 variant="contained" 
