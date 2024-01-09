@@ -3,13 +3,15 @@ import { Box, Button, Card, CardContent, Divider, Stack, TextField, Typography }
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { signinStart, signinFailure, signinSuccess } from "../redux/userSlice/userSlice.js";
+import { useDispatch, useSelector } from "react-redux";
 
 
-const Signin = ({ setAuthenticated }) => {
+const Signin = () => {
   const [formData, setFormData] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const { loading, error } = useSelector(state => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value })
@@ -19,7 +21,7 @@ const Signin = ({ setAuthenticated }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      setLoading(true);
+      dispatch(signinStart());
       if(loading) {
         Swal.showLoading();
       } else {
@@ -38,17 +40,14 @@ const Signin = ({ setAuthenticated }) => {
 
       // signup failure
       if(data.success === false) {
-        setError(true);
-        setLoading(false);
+        dispatch(signinFailure(data));
         return;
       };      
       // navigate to signin page
-      setError(false);
-      setLoading(false);
-      setAuthenticated(true);
+      dispatch(signinSuccess(data));
 
     } catch (error) {
-      setError(true);
+      dispatch(signinFailure(error));
     }
   };
   return (
@@ -80,10 +79,10 @@ const Signin = ({ setAuthenticated }) => {
                 onChange={handleChange}
               />
               {
-                error && <Typography variant="p" color="error" marginX={5} marginBottom={3}>Something went wrong!</Typography>
-                // ?  <p className='text-red-700 mx-5 mb-3'>{error.message}</p>
-                // || <p className='text-red-700 mx-5 mb-3'>Something went wrong!</p>
-                // :  ''
+                error 
+                  ?  <Typography variant="p" color="error" marginX={5} marginBottom={3}>{error.message}</Typography>
+                  || <Typography variant="p" color="error" marginX={5} marginBottom={3}>Something went wrong!</Typography>
+                  :  ''
               }
               <Button 
                 type="submit" 

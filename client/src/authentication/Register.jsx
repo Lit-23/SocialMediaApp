@@ -1,14 +1,16 @@
 import { Google } from "@mui/icons-material";
 import { Box, Button, Card, CardContent, Divider, Stack, TextField, Typography } from "@mui/material";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { signupStart, signupFailure, signupSuccess } from "../redux/userSlice/userSlice.js";
 
 
 const Register = () => {
   const [formData, setFormData] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const { loading, error } = useSelector(state => state.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -20,7 +22,7 @@ const Register = () => {
     e.preventDefault();
     if(formData.password === formData.confirmPassword) {
       try {
-        setLoading(true);
+        dispatch(signupStart());
         if(loading) {
           Swal.showLoading();
         } else {
@@ -39,16 +41,15 @@ const Register = () => {
 
         // signup failure
         if(data.success === false) {
-          setError(true);
-          setLoading(false);
+          dispatch(signupFailure(data));
           return;
         };      
         // navigate to signin page
-        setLoading(false);
+        dispatch(signupSuccess(data));
         navigate('/');
 
       } catch (error) {
-        setError(true);
+        dispatch(signupFailure(error));
       }
     } else {
       setError(true);

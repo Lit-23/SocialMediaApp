@@ -2,8 +2,9 @@ import { AppBar, Box, styled, Menu, IconButton, Toolbar, Tooltip, Typography, Ba
 import { Adb, Mail, Notifications } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import MessagesCard from '../message/MessagesCard';
+import { useSelector } from 'react-redux';
 
 const StyledToolbar = styled(Toolbar)(({theme}) => ({
   display:"flex",
@@ -29,7 +30,7 @@ const StyledTypography = styled(Typography)(({theme}) => ({
 }))
 
 const NavBar = () => {
-  const [authenticated, setAuthenticated] = useState(true);
+  const { authenticated } = useSelector(state => state.user);
 
   // state for MessagesCard modal
   const [openModal, setOpenModal] = useState(false);
