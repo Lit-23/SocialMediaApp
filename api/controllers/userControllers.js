@@ -52,5 +52,10 @@ export const signin = async (req, res, next) => {
     res.cookie('access_token', token, { httpOnly: true, expires: expiryDate }).status(200).json(rest);
   } catch (error) {
     next(error)
-  }  
+  }   
+};
+
+// logout functionality
+export const signout = async (req, res) => {
+  res.clearCookie('access_token').status(200).json('Signout success!');
 };

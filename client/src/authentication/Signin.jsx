@@ -22,11 +22,8 @@ const Signin = () => {
     e.preventDefault();
     try {
       dispatch(signinStart());
-      if(loading) {
-        Swal.showLoading();
-      } else {
-        Swal.hideLoading();
-      };
+      Swal.showLoading();
+      setTimeout(()=>Swal.close(), 800)
 
       // fetch data
       const res = await fetch(`/api/user/signin`, {

@@ -4,7 +4,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MessagesCard from '../message/MessagesCard';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { signout } from '../../redux/userSlice/userSlice.js';
+import Swal from 'sweetalert2';
 
 const StyledToolbar = styled(Toolbar)(({theme}) => ({
   display:"flex",
@@ -31,6 +33,8 @@ const StyledTypography = styled(Typography)(({theme}) => ({
 
 const NavBar = () => {
   const { authenticated } = useSelector(state => state.user);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   // state for MessagesCard modal
   const [openModal, setOpenModal] = useState(false);
@@ -53,7 +57,23 @@ const NavBar = () => {
     setOpenAvatarMenu(false);
   };
 
-  const navigate = useNavigate();
+  // signout functionality
+  const handleLogout = async () => {
+    try {
+      Swal.showLoading();
+      setTimeout(()=>Swal.hideLoading(), 500);
+      const res = await fetch(`/api/user/signout`);
+      Swal.fire({
+        icon: "success",
+        // title: "Oops...",
+        text: "Logout success!",
+      });
+      dispatch(signout());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <AppBar position="sticky">
       <StyledToolbar>
@@ -168,7 +188,7 @@ const NavBar = () => {
       >
         <MenuItem onClick={handleCloseAvatar}>Profile</MenuItem>
         <MenuItem onClick={handleCloseAvatar}>My account</MenuItem>
-        <MenuItem onClick={handleCloseAvatar}>Logout</MenuItem>
+        <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>
 
     </AppBar>
