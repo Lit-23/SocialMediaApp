@@ -3,8 +3,11 @@ import { Add, Gif, Image, InsertEmoticon, LocationOn, ModeEdit, MoreHoriz, Place
 import { useSelector } from 'react-redux';
 import Feed from '../components/Feed/Feed';
 import { useState } from 'react';
+import Swal from "sweetalert2";
 
-const defaultCoverPhoto = 'https://images.pexels.com/photos/696644/pexels-photo-696644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
+// imports for firebase storage
+import { app } from "../firebase/firebaseConfig.js";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const AvatarCard = styled(Card)({
   maxWidth: 800,
@@ -57,6 +60,18 @@ function Profile() {
   const [openEditProfile, setOpenEditProfile] = useState(false);
   const [openEditDetails, setOpenEditDetails] = useState(false);
   const [openAddPost, setOpenAddPost] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [profileImg, setProfileImg] = useState();
+  const [coverImg, setCoverImg] = useState();
+  const handleChange = (e) => {
+    setFormData({
+      ...formData, [e.target.id]: e.target.value
+    })
+  };
+  const handleUpload = async () => {};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  };
   return (
     <>
       <Box>
@@ -68,7 +83,7 @@ function Profile() {
               component="img"
               height="20%"
               sx={{borderRadius:2}}
-              image={defaultCoverPhoto}
+              image={currentUser.coverPhoto}
               alt="Cover Photo"
             />
             <Stack direction='row' alignItems='center' spacing={2}>
@@ -155,7 +170,7 @@ function Profile() {
               <Button>Edit</Button>
             </Stack>
             <Box sx={{width:'100%'}}>
-              <img id='cover-photo' alt='cover photo' src={defaultCoverPhoto}/>
+              <img id='cover-photo' alt='cover photo' src={currentUser.coverPhoto}/>
             </Box>
           </Box>
           <Stack spacing={2} mt={2}>

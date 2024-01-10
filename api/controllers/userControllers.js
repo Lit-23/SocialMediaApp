@@ -55,6 +55,39 @@ export const signin = async (req, res, next) => {
   }   
 };
 
+// update user functionality
+export const update = async (req, res, next) => {  
+  try {
+    if (req.body.password) {
+      req.body.password = bcryptjs.hashSync(req.body.password, 10);
+    };
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, {
+      $set: {
+          profilePicture: req.body.profilePicture,
+          firstName: req.body.firstName,
+          lastName: req.body.lastName,
+          email: req.body.email,
+          password: req.body.password,
+          coverPhoto: req.body.coverPhoto,
+          bio: req.body.bio,
+          work: req.body.work,
+          primarySchool: req.body.primarySchool,
+          secondarySchool: req.body.secondarySchool,
+          thirtiarySchool: req.body.thirtiarySchool,
+          homeAddress: req.body.homeAddress,
+          currentAddress: req.body.currentAddress,
+          status: req.body.status,
+        }
+      },
+      { new: true }     
+    );
+    const { password, ...rest } = updatedUser._doc;
+    res.status(200).json(rest);
+  } catch (error) {
+    next(error)
+  }
+};
+
 // logout functionality
 export const signout = async (req, res) => {
   res.clearCookie('access_token').status(200).json('Signout success!');
