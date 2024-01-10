@@ -32,7 +32,7 @@ const StyledTypography = styled(Typography)(({theme}) => ({
 }))
 
 const NavBar = () => {
-  const { authenticated } = useSelector(state => state.user);
+  const { currentUser, authenticated } = useSelector(state => state.user);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -69,6 +69,7 @@ const NavBar = () => {
         text: "Logout success!",
       });
       dispatch(signout());
+      navigate('/');
     } catch (error) {
       console.log(error);
     }
@@ -186,9 +187,12 @@ const NavBar = () => {
         }}
         sx={{mt:"35px", right:"50px"}}
       >
-        <MenuItem onClick={handleCloseAvatar}>Profile</MenuItem>
-        <MenuItem onClick={handleCloseAvatar}>My account</MenuItem>
-        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        {
+          currentUser &&
+          <MenuItem onClick={()=>{handleCloseAvatar(); navigate('/profile');}}>{`${currentUser.firstName} ${currentUser.lastName}`}</MenuItem>
+        }
+        <MenuItem onClick={handleCloseAvatar}>Settings</MenuItem>
+        <MenuItem onClick={()=>{handleCloseAvatar(); handleLogout();}}>Logout</MenuItem>
       </Menu>
 
     </AppBar>

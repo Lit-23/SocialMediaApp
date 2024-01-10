@@ -1,7 +1,8 @@
-import { Avatar, Box, Button, Card, CardActions, CardContent, CardMedia, Stack, Typography, styled } from '@mui/material';
-import { Add, ModeEdit, Place, School, Work } from '@mui/icons-material';
+import { Avatar, Box, Button, Card, CardActions, CardContent, CardMedia, Divider, IconButton, Modal, Stack, TextField, Typography, styled } from '@mui/material';
+import { Add, Gif, Image, InsertEmoticon, LocationOn, ModeEdit, MoreHoriz, Place, School, Work } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
 import Feed from '../components/Feed/Feed';
+import { useState } from 'react';
 
 const defaultCoverPhoto = 'https://images.pexels.com/photos/696644/pexels-photo-696644.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1';
 
@@ -32,76 +33,267 @@ const ProfileFeed = styled(Box)({
   marginRight: 'auto',
 });
 
+const StyledModal = styled(Modal)({
+  display:'flex',
+  alignItems:'center',
+  justifyContent:'center'
+});
+
+const UserBox = styled(Box)({
+  display:'flex',
+  alignItems:'center',
+  gap:10
+});
+
+const StyledAvatar = styled(Avatar)({
+  width: 120,
+  height: 120,
+  marginLeft:'auto',
+  marginRight:'auto'
+});
+
 function Profile() {
   const { currentUser } = useSelector(state => state.user);
+  const [openEditProfile, setOpenEditProfile] = useState(false);
+  const [openEditDetails, setOpenEditDetails] = useState(false);
+  const [openAddPost, setOpenAddPost] = useState(false);
   return (
-    <Box>
+    <>
+      <Box>
 
-      {/* Avatar Section Start */}
-      <AvatarCard>
-        <CardContent>
-          <CardMedia
-            component="img"
-            height="20%"
-            sx={{borderRadius:2}}
-            image={defaultCoverPhoto}
-            alt="Cover Photo"
-          />
-          <Stack direction='row' alignItems='center' spacing={2}>
-            <Avatar
-              alt="profile" 
-              src={currentUser.profilePicture}
-              sx={{height:120, width:120}}
+        {/* Avatar Section Start */}
+        <AvatarCard>
+          <CardContent>
+            <CardMedia
+              component="img"
+              height="20%"
+              sx={{borderRadius:2}}
+              image={defaultCoverPhoto}
+              alt="Cover Photo"
             />
-            <Typography variant='h6' fontWeight={300}>
-              {`${currentUser.firstName} ${currentUser.lastName}`}
-            </Typography>
-          </Stack>
-          <Box display='flex' gap={1} justifyContent='end'>
-            <Button variant='contained' startIcon={<Add/>}>Add Post</Button>
-            <Button variant='outlined' startIcon={<ModeEdit/>}>Edit Profile</Button>
+            <Stack direction='row' alignItems='center' spacing={2}>
+              <Avatar
+                alt="profile" 
+                src={currentUser.profilePicture}
+                sx={{height:120, width:120}}
+              />
+              <Typography variant='h6' fontWeight={300}>
+                {`${currentUser.firstName} ${currentUser.lastName}`}
+              </Typography>
+            </Stack>
+            <Box display='flex' gap={1} justifyContent='end'>
+              <Button variant='contained' startIcon={<Add/>} onClick={()=>setOpenAddPost(true)}>Add Post</Button>
+              <Button variant='outlined' startIcon={<ModeEdit/>} onClick={()=>setOpenEditProfile(true)}>Edit Profile</Button>
+            </Box>
+          </CardContent>
+        </AvatarCard>
+        {/* Avatar Section End */}
+
+        {/* Profile Details Start */}
+        <ProfileDetailsCard>
+          <CardContent>
+            <Typography variant='h6' fontWeight={300} marginBottom={1}>Background</Typography>
+
+            <Stack spacing={1}>
+              <StyledStack>
+                <Work sx={{color:'gray'}}/>
+                <Typography variant='p'>
+                  Studied at Batangas State Universirty
+                </Typography>
+              </StyledStack>
+              <StyledStack>
+                <School sx={{color:'gray'}}/>
+                <Typography variant='p'>
+                  Studied at Batangas State Universirty
+                </Typography>
+              </StyledStack>
+              <StyledStack>
+                <Place sx={{color:'gray'}}/>
+                <Typography variant='p'>
+                  Lives in Lipa, Batangas
+                </Typography>
+              </StyledStack>
+            </Stack>
+            
+          </CardContent>
+
+          <CardActions>
+            <Button variant='contained' sx={{width:'100%'}} onClick={()=>setOpenEditDetails(true)}>Edit details</Button>
+          </CardActions>
+        </ProfileDetailsCard>
+        {/* Profile Details End */}
+
+        {/* Feed Start */}
+        <ProfileFeed>
+          <Feed/>
+        </ProfileFeed>
+        {/* Feed End */}
+      </Box>
+
+      {/* Edit Profile Modal */}
+      <StyledModal
+        open={openEditProfile}
+        onClose={()=>setOpenEditProfile(false)}
+        aria-labelledby="parent-modal-title"
+        aria-describedby="parent-modal-description"
+      >
+        <Box component='form' bgcolor='white' width={600} borderRadius={2} padding={3} gap={5}>
+          <Typography variant="h6" component="h2" color='gray' fontWeight={400} textAlign='center' mb={1}>
+            Edit Profile
+          </Typography>
+          <Divider/>
+          <Box mt={2}>
+            <Stack direction='row' spacing='auto'>
+              <Typography variant='h6' fontWeight={300}>Profile Picture</Typography>
+              <Button>Edit</Button>
+            </Stack>
+            <StyledAvatar alt={currentUser.lastName} src={currentUser.profilePicture}/>
           </Box>
-        </CardContent>
-      </AvatarCard>
-      {/* Avatar Section End */}
-
-      {/* Profile Details Start */}
-      <ProfileDetailsCard>
-        <CardContent>
-          <Typography variant='h6' fontWeight={300} marginBottom={1}>Background</Typography>
-          <Stack spacing={1}>
-            <StyledStack>
-              <Work sx={{color:'gray'}}/>
-              <Typography variant='p'>
-                Studied at Batangas State Universirty
-              </Typography>
-            </StyledStack>
-            <StyledStack>
-              <School sx={{color:'gray'}}/>
-              <Typography variant='p'>
-                Studied at Batangas State Universirty
-              </Typography>
-            </StyledStack>
-            <StyledStack>
-              <Place sx={{color:'gray'}}/>
-              <Typography variant='p'>
-                Lives in Lipa, Batangas
-              </Typography>
-            </StyledStack>
+          <Box mt={2}>
+            <Stack direction='row' spacing='auto'>
+              <Typography variant='h6' fontWeight={300}>Cover Photo</Typography>
+              <Button>Edit</Button>
+            </Stack>
+            <Box sx={{width:'100%'}}>
+              <img id='cover-photo' alt='cover photo' src={defaultCoverPhoto}/>
+            </Box>
+          </Box>
+          <Stack spacing={2} mt={2}>
+            <Button type='submit' variant='contained'>
+              submit
+            </Button>
           </Stack>
-        </CardContent>
-        <CardActions>
-          <Button variant='contained' sx={{width:'100%'}}>Edit details</Button>
-        </CardActions>
-      </ProfileDetailsCard>
-      {/* Profile Details End */}
+        </Box>
+      </StyledModal>
 
-      {/* Feed Start */}
-      <ProfileFeed>
-        <Feed/>
-      </ProfileFeed>
-      {/* Feed End */}
-    </Box>
+      {/* Edit Details Modal */}
+      <StyledModal
+        open={openEditDetails}
+        onClose={()=>setOpenEditDetails(false)}
+        aria-labelledby="parent-modal-title"
+        aria-describedby="parent-modal-description"
+      >
+        <Box component='form' bgcolor='white' width={600} borderRadius={2} padding={3} gap={5}>
+          <Typography variant="h6" component="h2" color='gray' fontWeight={400} textAlign='center' mb={1}>
+            Edit Details
+          </Typography>
+          <Stack spacing={2}>
+            <TextField
+              id="bio"
+              multiline
+              label='Add bio'
+              variant="outlined"
+              sx={{width:'100%'}}
+            />
+            <TextField
+              id="work"
+              multiline
+              label='Add a workplace'
+              variant="outlined"
+              sx={{width:'100%'}}
+            />
+            <TextField
+              id="primarySchool"
+              multiline
+              label='Add elementary school'
+              variant="outlined"
+              sx={{width:'100%'}}
+            />
+            <TextField
+              id="secondarySchool"
+              multiline
+              label='Add high school'
+              variant="outlined"
+              sx={{width:'100%'}}
+            />
+            <TextField
+              id="thirtiarySchool"
+              multiline
+              label='Add college'
+              variant="outlined"
+              sx={{width:'100%'}}
+            />
+            <TextField
+              id="homeAddress"
+              multiline
+              label='Add home address'
+              variant="outlined"
+              sx={{width:'100%'}}
+            />
+            <TextField
+              id="currentAddress"
+              multiline
+              label='Add current address'
+              variant="outlined"
+              sx={{width:'100%'}}
+            />
+            <TextField
+              id="status"
+              multiline
+              label='Add a relationship status'
+              variant="outlined"
+              sx={{width:'100%'}}
+            />
+            <Button type='submit' variant='contained' sx={{py:['12px']}}>
+              submit
+            </Button>
+          </Stack>
+        </Box>
+      </StyledModal>
+
+      {/* Add Post Modal */}
+      <StyledModal
+        open={openAddPost}
+        onClose={()=>setOpenAddPost(false)}
+        aria-labelledby="parent-modal-title"
+        aria-describedby="parent-modal-description"
+      >
+        <Box component='form' bgcolor='white' width={400} borderRadius={2} padding={3} gap={5}>
+          <Typography variant="h6" component="h2" color='gray' fontWeight={400} textAlign='center' mb={1}>
+            Create Post
+          </Typography>
+          <Stack spacing={2}>
+            <UserBox>
+              <Avatar 
+                alt={currentUser.lastName} src={currentUser.profilePicture}
+                sx={{ height:30, width:30 }}
+              />
+              <Typography variant="span" component="h3" fontSize={16} fontWeight={400}>
+                {`${currentUser.firstName} ${currentUser.lastName}`}
+              </Typography>
+            </UserBox>
+            <TextField
+              id="standard-multiline-static"
+              multiline
+              rows={3}
+              placeholder={`Whats on your mind, ${currentUser.firstName}?`}
+              variant="standard"
+              sx={{width:'100%'}}
+            />
+            <Stack direction='row' justifyContent='end'>
+              <IconButton>
+                <Image color='success'/>
+              </IconButton>
+              <IconButton>
+                <InsertEmoticon sx={{color:['#ff9800']}}/>
+              </IconButton>
+              <IconButton>
+                <LocationOn color='error'/>
+              </IconButton>
+              <IconButton>
+                <Gif color='primary'/>
+              </IconButton>
+              <IconButton>
+                <MoreHoriz sx={{color:['#616161']}}/>
+              </IconButton>
+            </Stack>
+            <Button type='submit' variant='contained'>
+              POST
+            </Button>
+          </Stack>
+        </Box>
+      </StyledModal>
+    </>
   )
 }
 
