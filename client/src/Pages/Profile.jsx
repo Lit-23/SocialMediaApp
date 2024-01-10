@@ -1,13 +1,12 @@
 import { Avatar, Box, Button, Card, CardActions, CardContent, CardMedia, Divider, IconButton, Modal, Stack, TextField, Typography, styled } from '@mui/material';
-import { Add, Gif, Image, InsertEmoticon, LocationOn, ModeEdit, MoreHoriz, Place, School, Work } from '@mui/icons-material';
-import { useSelector } from 'react-redux';
+import { Add, Gif, Home, Image, InsertEmoticon, LocationOn, ModeEdit, MoreHoriz, Place, School, Work } from '@mui/icons-material';
+import { useDispatch, useSelector } from 'react-redux';
 import Feed from '../components/Feed/Feed';
 import { useState } from 'react';
 import Swal from "sweetalert2";
-
-// imports for firebase storage
 import { app } from "../firebase/firebaseConfig.js";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { updateUserStart, updateUserFailure, updateUserSuccess, signinFailure } from '../redux/userSlice/userSlice.js';
 
 const AvatarCard = styled(Card)({
   maxWidth: 800,
@@ -16,7 +15,7 @@ const AvatarCard = styled(Card)({
 });
 
 const ProfileDetailsCard = styled(Card)({
-  padding:10,
+  padding:5,
   marginTop:20,
   maxWidth: 600,
   marginLeft: 'auto',
@@ -56,13 +55,16 @@ const StyledAvatar = styled(Avatar)({
 });
 
 function Profile() {
-  const { currentUser } = useSelector(state => state.user);
+  const { currentUser, loading } = useSelector(state => state.user);
   const [openEditProfile, setOpenEditProfile] = useState(false);
   const [openEditDetails, setOpenEditDetails] = useState(false);
   const [openAddPost, setOpenAddPost] = useState(false);
   const [formData, setFormData] = useState({});
   const [profileImg, setProfileImg] = useState();
   const [coverImg, setCoverImg] = useState();
+  const [editingBio, setEditingBio] = useState(false);
+  const dispatch = useDispatch();
+  console.log(formData);
   const handleChange = (e) => {
     setFormData({
       ...formData, [e.target.id]: e.target.value
@@ -71,6 +73,42 @@ function Profile() {
   const handleUpload = async () => {};
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setOpenEditDetails(false);
+    try {
+      dispatch(updateUserStart());
+      if(loading){
+        Swal.showLoading();
+      } else {
+        Swal.hideLoading();
+      };
+      const res = await fetch(`/api/user/update/${currentUser._id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+
+      // user update failure
+      if(data.success === false){
+        dispatch(signinFailure(data));
+        alert('somethin went wrong');
+        return;
+      };
+
+      // user update success
+      dispatch(updateUserSuccess(data));
+      setEditingBio(false);
+      Swal.fire({
+        title: "Good job!",
+        text: `Successfully updated your background!`,
+        icon: "success"
+      });
+    } catch (error) {
+      dispatch(updateUserFailure(error));
+      alert('somethin went wrong');
+    }
   };
   return (
     <>
@@ -110,31 +148,108 @@ function Profile() {
             <Typography variant='h6' fontWeight={300} marginBottom={1}>Background</Typography>
 
             <Stack spacing={1}>
-              <StyledStack>
-                <Work sx={{color:'gray'}}/>
-                <Typography variant='p'>
-                  Studied at Batangas State Universirty
-                </Typography>
-              </StyledStack>
-              <StyledStack>
-                <School sx={{color:'gray'}}/>
-                <Typography variant='p'>
-                  Studied at Batangas State Universirty
-                </Typography>
-              </StyledStack>
-              <StyledStack>
-                <Place sx={{color:'gray'}}/>
-                <Typography variant='p'>
-                  Lives in Lipa, Batangas
-                </Typography>
-              </StyledStack>
+              {
+                currentUser.bio && !editingBio &&
+                <>
+                  <Typography variant='p' textAlign='center'>{currentUser.bio}</Typography>
+                  <Button variant='outlined' onClick={()=>{setEditingBio(true)}}>Edit bio</Button>
+                </>
+              }
+              {
+                editingBio &&
+                <>
+                  <TextField
+                    id="bio"
+                    multiline
+                    rows={3}
+                    defaultValue={currentUser.bio}
+                    onChange={handleChange}
+                  />
+                  <Box onSubmit={handleSubmit} component='form' display='flex' gap={1} justifyContent='end'>
+                    <Button variant='outlined' size='small' onClick={()=>{setEditingBio(false)}}>Cancel</Button>
+                    <Button type='submit' variant='contained' size='small'>Save</Button>
+                  </Box>
+                </>
+              }
+              {
+                currentUser.work && currentUser.designation
+                  ? <StyledStack>
+                      <Work sx={{color:'gray'}}/>
+                      <Typography variant='p'>
+                        Works as {formData.designation} at {currentUser.work}</Typography>
+                    </StyledStack>
+                  : currentUser.work 
+                    ? <StyledStack>
+                        <Work sx={{color:'gray'}}/>
+                        <Typography variant='p'>
+                          Works at {currentUser.work}
+                        </Typography>
+                      </StyledStack>
+                    : currentUser.designation 
+                      ? <StyledStack>
+                          <Work sx={{color:'gray'}}/>
+                          <Typography variant='p'>
+                            Works as {currentUser.designation}
+                          </Typography>
+                        </StyledStack>
+                      : ''
+              }
+              {
+                currentUser.primarySchool &&
+                <StyledStack>
+                  <School sx={{color:'gray'}}/>
+                  <Typography variant='p'>
+                    Studied at {currentUser.primarySchool}
+                  </Typography>
+                </StyledStack>
+              }
+              {
+                currentUser.secondarySchool &&
+                <StyledStack>
+                  <School sx={{color:'gray'}}/>
+                  <Typography variant='p'>
+                    Studied at {currentUser.secondarySchool}
+                  </Typography>
+                </StyledStack>
+              }
+              {
+                currentUser.thirtiarySchool &&
+                <StyledStack>
+                  <School sx={{color:'gray'}}/>
+                  <Typography variant='p'>
+                    Studied at {currentUser.thirtiarySchool}
+                  </Typography>
+                </StyledStack>
+              }
+              {
+                currentUser.currentAddress &&
+                <StyledStack>
+                  <Home sx={{color:'gray'}}/>
+                  <Typography variant='p'>
+                    Lives in {currentUser.currentAddress}
+                  </Typography>
+                </StyledStack>
+              }
+              {
+                currentUser.status &&
+                <StyledStack>
+                  <Place sx={{color:'gray'}}/>
+                  <Typography variant='p'>{currentUser.status}</Typography>
+                </StyledStack>
+              }
+              {
+                currentUser.homeAddress &&
+                <StyledStack>
+                  <Place sx={{color:'gray'}}/>
+                  <Typography variant='p'>
+                    From {currentUser.homeAddress}
+                  </Typography>
+                </StyledStack>
+              }
             </Stack>
             
+          <Button variant='contained' sx={{width:'100%', mt:2}} onClick={()=>setOpenEditDetails(true)}>Edit details</Button>
           </CardContent>
-
-          <CardActions>
-            <Button variant='contained' sx={{width:'100%'}} onClick={()=>setOpenEditDetails(true)}>Edit details</Button>
-          </CardActions>
         </ProfileDetailsCard>
         {/* Profile Details End */}
 
@@ -188,7 +303,7 @@ function Profile() {
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
-        <Box component='form' bgcolor='white' width={600} borderRadius={2} padding={3} gap={5}>
+        <Box onSubmit={handleSubmit} component='form' bgcolor='white' width={600} borderRadius={2} padding={3} gap={5}>
           <Typography variant="h6" component="h2" color='gray' fontWeight={400} textAlign='center' mb={1}>
             Edit Details
           </Typography>
@@ -199,6 +314,8 @@ function Profile() {
               label='Add bio'
               variant="outlined"
               sx={{width:'100%'}}
+              defaultValue={currentUser.bio || formData.bio}
+              onChange={handleChange}
             />
             <TextField
               id="work"
@@ -206,6 +323,17 @@ function Profile() {
               label='Add a workplace'
               variant="outlined"
               sx={{width:'100%'}}
+              defaultValue={currentUser.work || formData.work}
+              onChange={handleChange}
+            />
+            <TextField
+              id="designation"
+              multiline
+              label='Add your designation'
+              variant="outlined"
+              sx={{width:'100%'}}
+              defaultValue={currentUser.designation || formData.designation}
+              onChange={handleChange}
             />
             <TextField
               id="primarySchool"
@@ -213,6 +341,8 @@ function Profile() {
               label='Add elementary school'
               variant="outlined"
               sx={{width:'100%'}}
+              defaultValue={currentUser.primarySchool || formData.primarySchool}
+              onChange={handleChange}
             />
             <TextField
               id="secondarySchool"
@@ -220,6 +350,8 @@ function Profile() {
               label='Add high school'
               variant="outlined"
               sx={{width:'100%'}}
+              defaultValue={currentUser.secondarySchool || formData.secondarySchool}
+              onChange={handleChange}
             />
             <TextField
               id="thirtiarySchool"
@@ -227,13 +359,8 @@ function Profile() {
               label='Add college'
               variant="outlined"
               sx={{width:'100%'}}
-            />
-            <TextField
-              id="homeAddress"
-              multiline
-              label='Add home address'
-              variant="outlined"
-              sx={{width:'100%'}}
+              defaultValue={currentUser.thirtiarySchool || formData.thirtiarySchool}
+              onChange={handleChange}
             />
             <TextField
               id="currentAddress"
@@ -241,6 +368,17 @@ function Profile() {
               label='Add current address'
               variant="outlined"
               sx={{width:'100%'}}
+              defaultValue={currentUser.currentAddress || formData.currentAddress}
+              onChange={handleChange}
+            />
+            <TextField
+              id="homeAddress"
+              multiline
+              label='Add home address'
+              variant="outlined"
+              sx={{width:'100%'}}
+              defaultValue={currentUser.homeAddress || formData.homeAddress}
+              onChange={handleChange}
             />
             <TextField
               id="status"
@@ -248,6 +386,8 @@ function Profile() {
               label='Add a relationship status'
               variant="outlined"
               sx={{width:'100%'}}
+              defaultValue={currentUser.status || formData.status}
+              onChange={handleChange}
             />
             <Button type='submit' variant='contained' sx={{py:['12px']}}>
               submit
