@@ -71,6 +71,7 @@ export const update = async (req, res, next) => {
           coverPhoto: req.body.coverPhoto,
           bio: req.body.bio,
           work: req.body.work,
+          designation: req.body.designation,
           primarySchool: req.body.primarySchool,
           secondarySchool: req.body.secondarySchool,
           thirtiarySchool: req.body.thirtiarySchool,

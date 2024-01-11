@@ -127,7 +127,7 @@ const NavBar = () => {
                   </Tooltip>
                   <Tooltip title="Account">
                     <IconButton onClick={handleOpenAvatar}>
-                      <Avatar sx={{height:30, width:30}} alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                      <Avatar sx={{height:30, width:30}} alt="Remy Sharp" src={currentUser.profilePicture} />
                     </IconButton>
                   </Tooltip>
                 </Icons>

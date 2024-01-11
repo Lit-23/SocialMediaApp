@@ -36,6 +36,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  designation:{
+    type: String,
+    required: false,
+  },
   primarySchool:{
     type: String,
     required: false,
