@@ -8,6 +8,7 @@ import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from "../models/user.model.js";
 import errorHandler from '../utils/errorHandler.js';
+import Post from '../models/post.model.js';
 
 // signup new user functionality
 export const signup = async (req, res, next) => {
@@ -84,6 +85,21 @@ export const update = async (req, res, next) => {
     );
     const { password, ...rest } = updatedUser._doc;
     res.status(200).json(rest);
+  } catch (error) {
+    next(error)
+  }
+};
+
+// addPost functionality
+export const addPost = async (req, res, next) => {
+  // request body
+  const { user, userAvatar, postDescription, postThumbnail } = req.body;
+
+  // save the new PostpostDescription
+  const newPost = new Post({ user, userAvatar, postDescription, postThumbnail });
+  try {
+    await newPost.save();
+    res.status(200).json('successfully added new post!');
   } catch (error) {
     next(error)
   }

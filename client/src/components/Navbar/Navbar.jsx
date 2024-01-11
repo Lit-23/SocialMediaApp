@@ -1,5 +1,5 @@
-import { AppBar, Box, styled, Menu, IconButton, Toolbar, Tooltip, Typography, Badge, Avatar, MenuItem } from '@mui/material';
-import { Adb, Mail, Notifications } from '@mui/icons-material';
+import { AppBar, Box, styled, Menu, IconButton, Toolbar, Tooltip, Typography, Badge, Avatar, MenuItem, Divider, Button } from '@mui/material';
+import { Adb, Logout, Mail, Notifications, Settings } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -132,7 +132,7 @@ const NavBar = () => {
                   </Tooltip>
                 </Icons>
                 <Box sx={{ display:{xs:"block", sm:"none"} }}>
-                  <MenuIcon/>
+                  <MenuIcon onClick={handleOpenAvatar}/>
                 </Box>
               </Box>
             : <Box sx={{ display:"flex", gap:1 }}>
@@ -191,10 +191,16 @@ const NavBar = () => {
           currentUser &&
           <MenuItem onClick={()=>{handleCloseAvatar(); navigate('/profile');}}>{`${currentUser.firstName} ${currentUser.lastName}`}</MenuItem>
         }
-        <MenuItem onClick={handleCloseAvatar}>Settings</MenuItem>
-        <MenuItem onClick={()=>{handleCloseAvatar(); handleLogout();}}>Logout</MenuItem>
+        <Divider/>
+        <MenuItem onClick={handleCloseAvatar}>
+          <Typography>Settings</Typography>
+          <Settings sx={{color:'gray', ml:'auto'}}/>
+        </MenuItem>
+        <MenuItem onClick={()=>{handleCloseAvatar(); handleLogout();}}>
+          Logout
+          <Logout sx={{color:'gray', ml:'auto'}}/>
+        </MenuItem>
       </Menu>
-
     </AppBar>
   )
 }
