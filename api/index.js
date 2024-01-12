@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import userRoutes from "./routes/userRoutes.js";
+import path from 'path';
 dotenv.config();
 
 mongoose.connect(process.env.MONGO)
@@ -12,6 +13,8 @@ mongoose.connect(process.env.MONGO)
     console.log(err)
 });
 
+const __dirname = path.resolve();
+
 const app = express();
 
 app.listen(3000, (req, res) => {
@@ -20,6 +23,12 @@ app.listen(3000, (req, res) => {
 
 app.use(express.json());
 app.use('/api/user', userRoutes);
+
+app.use(express.static(path.join(__dirname, '/client/dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+})
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
