@@ -82,7 +82,7 @@ function Profile() {
 
   useEffect(() => {
     if(profilePicture) {
-      handleUpload(profilePicture, 'profilePicture', profileError, setProfilePercent);
+      handleUpload(profilePicture, 'profilePicture', setProfileError, setProfilePercent);
     }
     if(coverPhoto) {
       handleUpload(coverPhoto, 'coverPhoto', setCoverPhotoError, setCoverPhotoPercent);
@@ -308,7 +308,7 @@ function Profile() {
       {/* Edit Profile Modal */}
       <StyledModal
         open={openEditProfile}
-        onClose={()=>{setOpenEditProfile(false); setFormData({}); setProfilePercent(0); setCoverPhotoPercent(0);}}
+        onClose={()=>{setOpenEditProfile(false); setFormData({}); setProfilePercent(0); setCoverPhotoPercent(0); setProfilePicture(); setCoverPhoto();}}
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >

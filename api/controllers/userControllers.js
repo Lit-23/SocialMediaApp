@@ -93,10 +93,10 @@ export const update = async (req, res, next) => {
 // addPost functionality
 export const addPost = async (req, res, next) => {
   // request body
-  const { user, userAvatar, postDescription, postThumbnail } = req.body;
+  const { id, user, userAvatar, postDescription, postThumbnail } = req.body;
 
   // save the new PostpostDescription
-  const newPost = new Post({ user, userAvatar, postDescription, postThumbnail });
+  const newPost = new Post({ id, user, userAvatar, postDescription, postThumbnail });
   try {
     await newPost.save();
     res.status(200).json('successfully added new post!');
