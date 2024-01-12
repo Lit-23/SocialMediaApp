@@ -3,7 +3,7 @@ import { Avatar, Card, CardActions, CardContent, CardHeader, CardMedia, Checkbox
 
 const PostCard = ({ user, userAvatar, timestamps, postDescription, postThumbnail }) => {
   return (
-    <Card sx={{ maxWidth: 600 }}>
+    <Card sx={{ maxWidth: 600, width:'100%' }}>
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: 'red' }} aria-label="recipe" src={userAvatar}/>

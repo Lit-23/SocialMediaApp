@@ -6,7 +6,7 @@ import AddPost from '../components/Feed/AddPost';
 import NewMessageCard from '../components/message/NewMessageCard';
 import Signin from '../authentication/Signin';
 import { useSelector, useDispatch } from 'react-redux';
-import { addPostFailure, addPostStart, addPostSuccess } from '../redux/postSlice/postSlice.js';
+import { getPostListStart, getPostListFailure, getPostListSuccess, } from '../redux/postSlice/postSlice.js';
 import { getUserListStart, getUserListFailure, getUserListSuccess } from '../redux/userSlice/userSlice.js';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
@@ -20,7 +20,7 @@ const MainPage = () => {
   const dispatch = useDispatch();
   const searchPostCollection = async () => {
     try {
-      dispatch(getUserListStart());
+      dispatch(getPostListStart());
       if(postLoading === true) {
         Swal.showLoading();
       } else {
@@ -28,10 +28,10 @@ const MainPage = () => {
       };
       const res = await fetch('/api/user/post-list', { method: 'GET' });
       const data = await res.json();
-      dispatch(getUserListSuccess(data));
+      dispatch(getPostListSuccess(data));
       setPostCollection(data);
     } catch (error) {
-      dispatch(getUserListFailure(error));
+      dispatch(getPostListFailure(error));
       console.log('error fetching!');
     }
   };
@@ -39,12 +39,12 @@ const MainPage = () => {
     searchPostCollection();
   }, []);
 
-  // functionality for fetching posts collection
+  // functionality for fetching user collection
   const [userCollection, setUserCollection] = useState([]);
   const { loading } = useSelector(state => state.user);
   const searchUserCollection = async () => {
     try {
-      dispatch(addPostStart());
+      dispatch(getUserListStart());
       if(loading === true) {
         Swal.showLoading();
       } else {
@@ -52,11 +52,11 @@ const MainPage = () => {
       };
       const res = await fetch('/api/user/user-list', { method: 'GET' });
       const data = await res.json();
-      dispatch(addPostSuccess(data));
+      dispatch(getUserListSuccess(data));
       setUserCollection(data);
       console.log(postCollection);
     } catch (error) {
-      dispatch(addPostFailure(error));
+      dispatch(getUserListFailure(error));
       console.log('error fetching!');
     }
   };

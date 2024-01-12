@@ -49,7 +49,7 @@ const Signin = () => {
   };
   return (
     <Box sx={{display:'flex', justifyContent:'center'}}>
-      <Card sx={{ margin:5, padding:1, width:'100%', maxWidth:'600px' }}>
+      <Card sx={{ width:'100%', maxWidth:'600px' }}>
         <CardContent>
           <Typography variant="h5" color='gray' fontWeight={300}  textAlign="center" mb={3}>
             Signin

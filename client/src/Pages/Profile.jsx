@@ -1,12 +1,12 @@
 import { Avatar, Box, Button, Card, CardActions, CardContent, CardMedia, Divider, IconButton, Modal, Stack, TextField, Typography, styled } from '@mui/material';
 import { Add, Favorite, Gif, Home, Image, InsertEmoticon, LocationOn, ModeEdit, MoreHoriz, Place, School, Work } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
-import Feed from '../components/Feed/Feed';
 import { useEffect, useRef, useState } from 'react';
 import Swal from "sweetalert2";
 import { app } from "../firebase/firebaseConfig.js";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { updateUserStart, updateUserFailure, updateUserSuccess, signinFailure } from '../redux/userSlice/userSlice.js';
+import PostCard from '../components/Feed/PostCard.jsx';
 
 const AvatarCard = styled(Card)({
   maxWidth: 800,
@@ -30,9 +30,8 @@ const StyledStack = styled(Box)({
 
 const ProfileFeed = styled(Box)({
   marginTop:20,
-  maxWidth: '800px',
-  marginLeft: 'auto',
-  marginRight: 'auto',
+  display: 'flex',
+  justifyContent:'center'
 });
 
 const StyledModal = styled(Modal)({
@@ -55,6 +54,7 @@ const StyledAvatar = styled(Avatar)({
 });
 
 function Profile() {
+  const { postList } = useSelector(state => state.post);
   const { currentUser, loading } = useSelector(state => state.user);
   const [openEditProfile, setOpenEditProfile] = useState(false);
   const [openEditDetails, setOpenEditDetails] = useState(false);
@@ -300,7 +300,19 @@ function Profile() {
 
         {/* Feed Start */}
         <ProfileFeed>
-          <Feed/>
+          <Stack display='block' spacing={3} marginBottom={10}>
+            {
+              postList &&
+              postList.map((post, index) => {
+                const date = post.createdAt.slice(0, 10);
+                if(post.id === currentUser._id) {
+                  return  (
+                    <PostCard key={index} user={post.user} userAvatar={post.userAvatar} timestamps={date} postDescription={post.postDescription} postThumbnail={post.postThumbnail}/>
+                  )
+                }
+              })
+            }
+          </Stack>
         </ProfileFeed>
         {/* Feed End */}
       </Box>

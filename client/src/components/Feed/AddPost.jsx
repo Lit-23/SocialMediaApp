@@ -24,7 +24,6 @@ const StyledModal = styled(Modal)(({theme}) => ({
 }));
 
 const AddPost = ({ searchCollection }) => {
-  // functionality for toggling post modal
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
     setOpen(true);
@@ -34,7 +33,6 @@ const AddPost = ({ searchCollection }) => {
   };
 
   // functionality for adding post
-  // { id, user, userAvatar, timestamps, postDescription, postThumbnail }
   const { currentUser } = useSelector(state => state.user);
   const { post, postLoading } = useSelector(state => state.post)
   const [formData, setFormData] = useState({});
@@ -105,6 +103,7 @@ const AddPost = ({ searchCollection }) => {
       dispatch(addPostSuccess(data));
       handleClose();
       searchCollection();
+      setFormData({});
       Swal.fire({
         title: "Good job!",
         text: `Added a new Post!`,
