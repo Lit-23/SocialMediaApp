@@ -16,13 +16,16 @@ const PostCard = ({ user, userAvatar, timestamps, postDescription, postThumbnail
         title={user}
         subheader={timestamps}
       />
-      <CardMedia
-        component="img"
-        height="350px"
-        // sx={{maxHeight:300, width:600, objectFit:'contain'}}
-        image={postThumbnail}
-        alt="Paella dish"
-      />
+      {
+        postThumbnail &&
+        <CardMedia
+          component="img"
+          height="350px"
+          // sx={{maxHeight:300, width:600, objectFit:'contain'}}
+          image={postThumbnail}
+          alt="Paella dish"
+        />
+      }
       <CardContent>
         <Typography variant="p" color="text.secondary">
           {postDescription}

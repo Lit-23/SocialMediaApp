@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   post: null,
-  loading: false,
+  postLoading: false,
   error: false
 };
 
@@ -12,15 +12,15 @@ const postSlice = createSlice({
   reducers: {
     // addpost
     addPostStart: (state) => {
-      state.loading = true;
+      state.postLoading = true;
     },
     addPostFailure: (state, action) => {
-      state.loading = false;
+      state.postLoading = false;
       state.error = action.payload;
     },
     addPostSuccess: (state, action) => {
       state.post = action.payload;
-      state.loading = false;
+      state.postLoading = false;
       state.error = false;
     },
   }

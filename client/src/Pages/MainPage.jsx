@@ -1,4 +1,4 @@
-import { Box, Stack } from '@mui/material';
+import { Box, Fab, Stack, Tooltip } from '@mui/material';
 import Sidebar from '../components/Sidebar/Sidebar';
 import Feed from '../components/Feed/Feed';
 import Rightbar from '../components/Rightbar/Rightbar';
@@ -7,6 +7,7 @@ import NewMessageCard from '../components/message/NewMessageCard';
 import Signin from '../authentication/Signin';
 import { useSelector, useDispatch } from 'react-redux';
 import { addPostFailure, addPostStart, addPostSuccess } from '../redux/postSlice/postSlice.js';
+import { getUserListStart, getUserListFailure, getUserListSuccess } from '../redux/userSlice/userSlice.js';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 
@@ -14,11 +15,34 @@ const MainPage = () => {
   const { authenticated } = useSelector(state => state.user);
 
   // functionality for fetching posts collection
-  const [collection, setCollection] = useState([]);
-  const { loading } = useSelector(state => state.post);
-  console.log(loading)
+  const [postCollection, setPostCollection] = useState([]);
+  const { postLoading } = useSelector(state => state.post);
   const dispatch = useDispatch();
-  const searchCollection = async () => {
+  const searchPostCollection = async () => {
+    try {
+      dispatch(getUserListStart());
+      if(postLoading === true) {
+        Swal.showLoading();
+      } else {
+        Swal.hideLoading();
+      };
+      const res = await fetch('/api/user/post-list', { method: 'GET' });
+      const data = await res.json();
+      dispatch(getUserListSuccess(data));
+      setPostCollection(data);
+    } catch (error) {
+      dispatch(getUserListFailure(error));
+      console.log('error fetching!');
+    }
+  };
+  useEffect(() => {
+    searchPostCollection();
+  }, []);
+
+  // functionality for fetching posts collection
+  const [userCollection, setUserCollection] = useState([]);
+  const { loading } = useSelector(state => state.user);
+  const searchUserCollection = async () => {
     try {
       dispatch(addPostStart());
       if(loading === true) {
@@ -26,19 +50,20 @@ const MainPage = () => {
       } else {
         Swal.hideLoading();
       };
-      const res = await fetch('/api/user/post-list', { method: 'GET' });
+      const res = await fetch('/api/user/user-list', { method: 'GET' });
       const data = await res.json();
       dispatch(addPostSuccess(data));
-      setCollection(data);
-      console.log(collection);
+      setUserCollection(data);
+      console.log(postCollection);
     } catch (error) {
       dispatch(addPostFailure(error));
       console.log('error fetching!');
     }
   };
   useEffect(() => {
-    searchCollection();
-  }, [])
+    searchUserCollection();
+  }, []);
+
 
   return (
     <>
@@ -47,10 +72,10 @@ const MainPage = () => {
         ? <Box>
            <Stack direction='row' spacing={2}>
             <Sidebar/>
-            <Feed collection={collection} loading={loading} />
-            <Rightbar/>
+            <Feed collection={postCollection} loading={loading} />
+            <Rightbar collection={userCollection}/>
            </Stack>
-           <AddPost searchCollection={searchCollection}/>
+           <AddPost searchCollection={searchPostCollection}/>
            <NewMessageCard/>
           </Box>
         : <Signin/>

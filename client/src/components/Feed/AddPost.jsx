@@ -36,7 +36,7 @@ const AddPost = ({ searchCollection }) => {
   // functionality for adding post
   // { id, user, userAvatar, timestamps, postDescription, postThumbnail }
   const { currentUser } = useSelector(state => state.user);
-  const { post, loading, error } = useSelector(state => state.post)
+  const { post, postLoading } = useSelector(state => state.post)
   const [formData, setFormData] = useState({});
   const [thumbnail, setThumbnail] = useState();
   const [thumbnailError, setThumbnailError] = useState(false);
@@ -85,7 +85,7 @@ const AddPost = ({ searchCollection }) => {
     console.log(formData)
     try {
       dispatch(addPostStart());
-      if(loading){
+      if(postLoading){
         Swal.showLoading();
       } else {
         Swal.hideLoading();
@@ -114,16 +114,6 @@ const AddPost = ({ searchCollection }) => {
       dispatch(addPostFailure(error));
     };
   };
-  // alert if theres error in uploading post thumbnail
-  useEffect(() => {
-    if(error) {
-      Swal.fire({
-        title: "Ooops...",
-        text: `Something went wrong!`,
-        icon: "error"
-      });
-    }
-  }, [error]);
   return (
     <>
       {/* Tooltip */}

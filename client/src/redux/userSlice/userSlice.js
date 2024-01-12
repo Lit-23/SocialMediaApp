@@ -63,19 +63,19 @@ const userSlice = createSlice({
       state.error = false;
     },
 
-    // // addpost
-    // addPostStart: (state) => {
-    //   state.loading = true;
-    // },
-    // addPostFailure: (state, action) => {
-    //   state.loading = false;
-    //   state.error = action.payload;
-    // },
-    // addPostSuccess: (state, action) => {
-    //   state.post = action.payload;
-    //   state.loading = false;
-    //   state.error = false;
-    // },
+    // get user collection
+    getUserListStart: (state) => {
+      state.loading = true;
+    },
+    getUserListFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    getUserListSuccess: (state, action) => {
+      state.post = action.payload;
+      state.loading = false;
+      state.error = false;
+    },
   }
 });
 
@@ -90,9 +90,9 @@ export const {
   updateUserFailure,
   updateUserSuccess,
   signout,
-  // addPostStart,
-  // addPostFailure,
-  // addPostSuccess,
+  getUserListStart,
+  getUserListFailure,
+  getUserListSuccess,
 } = userSlice.actions
 
 export default userSlice.reducer

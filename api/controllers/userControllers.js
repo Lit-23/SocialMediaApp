@@ -106,7 +106,7 @@ export const addPost = async (req, res, next) => {
   }
 };
 
-// get post collection functionality
+// get posts collection functionality
 export const getPostList = async (req, res, next) => {
   const mongoURI = process.env.MONGO;
   const client = new MongoClient(mongoURI);
@@ -114,6 +114,21 @@ export const getPostList = async (req, res, next) => {
     await client.connect();
     const database = client.db('user');
     const collection = database.collection('posts');
+    const data = await collection.find().toArray();
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// get users collection functionality
+export const getUserList = async (req, res, next) => {
+  const mongoURI = process.env.MONGO;
+  const client = new MongoClient(mongoURI);
+  try {
+    await client.connect();
+    const database = client.db('user');
+    const collection = database.collection('users');
     const data = await collection.find().toArray();
     res.status(200).json(data);
   } catch (error) {

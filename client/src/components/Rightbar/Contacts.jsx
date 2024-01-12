@@ -1,47 +1,21 @@
 import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material'
 import { Fragment } from 'react'
 
-const Contacts = () => {
+const Contacts = ({ collection }) => {
   return (
     <Box>
       <Typography variant='h6' fontWeight={300}>Contacts</Typography>
       <List sx={{ width: '100%', maxWidth: 360 }}>
-        <ListItem alignItems="center">
-          <ListItemAvatar>
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-          </ListItemAvatar>
-          <ListItemText primary="Con Doriano"/>
-        </ListItem>
-        <ListItem alignItems="center">
-          <ListItemAvatar>
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-          </ListItemAvatar>
-          <ListItemText primary="Con Doriano"/>
-        </ListItem>
-        <ListItem alignItems="center">
-          <ListItemAvatar>
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-          </ListItemAvatar>
-          <ListItemText primary="Con Doriano"/>
-        </ListItem>
-        <ListItem alignItems="center">
-          <ListItemAvatar>
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-          </ListItemAvatar>
-          <ListItemText primary="Con Doriano"/>
-        </ListItem>
-        <ListItem alignItems="center">
-          <ListItemAvatar>
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-          </ListItemAvatar>
-          <ListItemText primary="Con Doriano"/>
-        </ListItem>
-        <ListItem alignItems="center">
-          <ListItemAvatar>
-            <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-          </ListItemAvatar>
-          <ListItemText primary="Con Doriano"/>
-        </ListItem>
+        {
+          collection.map((user, index) => (
+            <ListItem key={index} alignItems="center">
+              <ListItemAvatar>
+                <Avatar alt="Remy Sharp" src={user.profilePicture} />
+              </ListItemAvatar>
+              <ListItemText primary={`${user.firstName} ${user.lastName}`} />
+            </ListItem>
+          ))
+        }
       </List>
     </Box>
   )
