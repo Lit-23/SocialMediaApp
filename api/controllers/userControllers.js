@@ -9,6 +9,7 @@ import jwt from 'jsonwebtoken';
 import User from "../models/user.model.js";
 import errorHandler from '../utils/errorHandler.js';
 import Post from '../models/post.model.js';
+import { MongoClient } from "mongodb";
 
 // signup new user functionality
 export const signup = async (req, res, next) => {
@@ -102,6 +103,21 @@ export const addPost = async (req, res, next) => {
     res.status(200).json('successfully added new post!');
   } catch (error) {
     next(error)
+  }
+};
+
+// get post collection functionality
+export const getPostList = async (req, res, next) => {
+  const mongoURI = process.env.MONGO;
+  const client = new MongoClient(mongoURI);
+  try {
+    await client.connect();
+    const database = client.db('user');
+    const collection = database.collection('posts');
+    const data = await collection.find().toArray();
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
   }
 };
 
