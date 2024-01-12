@@ -23,7 +23,7 @@ const StyledModal = styled(Modal)(({theme}) => ({
   justifyContent:'center'
 }));
 
-const AddPost = () => {
+const AddPost = ({ searchCollection }) => {
   // functionality for toggling post modal
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
@@ -104,6 +104,7 @@ const AddPost = () => {
       };
       dispatch(addPostSuccess(data));
       handleClose();
+      searchCollection();
       Swal.fire({
         title: "Good job!",
         text: `Added a new Post!`,

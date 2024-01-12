@@ -18,16 +18,17 @@ const PostCard = ({ user, userAvatar, timestamps, postDescription, postThumbnail
       />
       <CardMedia
         component="img"
-        height="20%"
+        height="350px"
+        // sx={{maxHeight:300, width:600, objectFit:'contain'}}
         image={postThumbnail}
         alt="Paella dish"
       />
       <CardContent>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="p" color="text.secondary">
           {postDescription}
         </Typography>
       </CardContent>
-      <CardActions disableSpacing>
+      <CardActions disableSpacing >
         <IconButton aria-label="add to favorites">
           <Checkbox icon={<FavoriteBorder />} checkedIcon={<Favorite color='error'/>} />
         </IconButton>

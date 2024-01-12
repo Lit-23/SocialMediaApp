@@ -9,6 +9,6 @@ router.post('/signin', signin);
 router.get('/signout', signout);
 router.post('/update/:id', update);
 router.post('/add-post/:id', addPost);
-router.post('/post-list', getPostList);
+router.get('/post-list', getPostList);
 
 export default router;
