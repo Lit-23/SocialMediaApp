@@ -2,8 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   currentUser: null,
+  userList: null,
+  otherUser: null,
   authenticated: false,
-  // post: null,
   loading: false,
   error: false
 };
@@ -72,7 +73,21 @@ const userSlice = createSlice({
       state.error = action.payload;
     },
     getUserListSuccess: (state, action) => {
-      state.post = action.payload;
+      state.userList = action.payload;
+      state.loading = false;
+      state.error = false;
+    },
+
+    // search user by ID
+    searchUserByIDStart: (state) => {
+      state.loading = true;
+    },
+    searchUserByIDFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    searchUserByIDSuccess: (state, action) => {
+      state.otherUser = action.payload;
       state.loading = false;
       state.error = false;
     },
@@ -93,6 +108,9 @@ export const {
   getUserListStart,
   getUserListFailure,
   getUserListSuccess,
+  searchUserByIDStart,
+  searchUserByIDFailure,
+  searchUserByIDSuccess,
 } = userSlice.actions
 
 export default userSlice.reducer

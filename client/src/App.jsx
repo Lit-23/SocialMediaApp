@@ -1,9 +1,10 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./Layout";
 import Register from "./authentication/Register";
-import Signin from "./authentication/Signin";
 import MainPage from "./Pages/MainPage";
 import Profile from "./Pages/Profile";
+import OtherUserProfile from "./Pages/UserProfile";
+
 function App() {
 
   return (
@@ -13,6 +14,7 @@ function App() {
           <Route path="/register" element={<Register/>}/>
           <Route index element={<MainPage/>}/>
           <Route path='/profile' element={<Profile/>}/>
+          <Route path='/user-profile' element={<OtherUserProfile/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

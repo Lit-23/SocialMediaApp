@@ -1,4 +1,4 @@
-import { Box, Fab, Stack, Tooltip } from '@mui/material';
+import { Box, Stack, } from '@mui/material';
 import Sidebar from '../components/Sidebar/Sidebar';
 import Feed from '../components/Feed/Feed';
 import Rightbar from '../components/Rightbar/Rightbar';
@@ -70,7 +70,7 @@ const MainPage = () => {
       {
         authenticated
         ? <Box>
-           <Stack direction='row' spacing={2}>
+           <Stack direction='row'>
             <Sidebar/>
             <Feed collection={postCollection} loading={loading} />
             <Rightbar collection={userCollection}/>

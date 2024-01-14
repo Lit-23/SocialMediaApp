@@ -7,8 +7,8 @@ export const test = (req, res) => {
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from "../models/user.model.js";
-import errorHandler from '../utils/errorHandler.js';
 import Post from '../models/post.model.js';
+import errorHandler from '../utils/errorHandler.js';
 import { MongoClient } from "mongodb";
 
 // signup new user functionality
@@ -135,6 +135,17 @@ export const getUserList = async (req, res, next) => {
     next(error);
   }
 };
+
+// find employee by id
+export const searchUserById = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
 
 // logout functionality
 export const signout = async (req, res) => {

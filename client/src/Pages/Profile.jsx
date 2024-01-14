@@ -73,7 +73,7 @@ function Profile() {
   const dispatch = useDispatch();
   const profileRef = useRef(null);
   const coverRef = useRef(null);
-  console.log(formData);
+  
   const handleChange = (e) => {
     setFormData({
       ...formData, [e.target.id]: e.target.value
@@ -180,8 +180,16 @@ function Profile() {
               </Typography>
             </Stack>
             <Box display='flex' gap={1} justifyContent='end'>
-              <Button variant='contained' startIcon={<Add/>} onClick={()=>setOpenAddPost(true)}>Add Post</Button>
-              <Button variant='outlined' startIcon={<ModeEdit/>} onClick={()=>setOpenEditProfile(true)}>Edit Profile</Button>
+              <Button variant='contained' startIcon={<Add/>} onClick={()=>setOpenAddPost(true)}>
+                <Typography fontSize={12}>
+                  Add Post
+                </Typography>
+              </Button>
+              <Button variant='outlined' startIcon={<ModeEdit/>} onClick={()=>setOpenEditProfile(true)}>
+                <Typography fontSize={12}>
+                  Edit Profile
+                </Typography>
+              </Button>
             </Box>
           </CardContent>
         </AvatarCard>
@@ -300,7 +308,7 @@ function Profile() {
 
         {/* Feed Start */}
         <ProfileFeed>
-          <Stack display='block' spacing={3} marginBottom={10}>
+          <Stack spacing={3} marginBottom={10}>
             {
               postList &&
               postList.map((post, index) => {
