@@ -72,7 +72,7 @@ const MainPage = () => {
         ? <Box>
            <Stack direction='row'>
             <Sidebar/>
-            <Feed collection={postCollection} loading={loading} />
+            <Feed collection={postCollection} loading={postLoading} searchPostCollection={searchPostCollection} />
             <Rightbar collection={userCollection}/>
            </Stack>
            <AddPost searchCollection={searchPostCollection}/>

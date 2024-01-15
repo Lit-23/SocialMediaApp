@@ -27,9 +27,18 @@ const AddPost = ({ searchCollection }) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => {
     setOpen(true);
+    setFormData({
+      ...formData, 
+      id: currentUser._id, 
+      user: `${currentUser.firstName} ${currentUser.lastName}`, 
+      userAvatar: currentUser.profilePicture
+    });
   };
   const handleClose = () => {
     setOpen(false);
+    setFormData({});
+    setThumbnail(); 
+    setThumbnailPercent(0);
   };
 
   // functionality for adding post
@@ -74,20 +83,9 @@ const AddPost = ({ searchCollection }) => {
   };
   const handlePost = async (e) => {
     e.preventDefault();
-    setFormData({
-      ...formData, 
-      id: currentUser._id, 
-      user: `${currentUser.firstName} ${currentUser.lastName}`, 
-      userAvatar: currentUser.profilePicture
-    });
     console.log(formData)
     try {
       dispatch(addPostStart());
-      if(postLoading){
-        Swal.showLoading();
-      } else {
-        Swal.hideLoading();
-      };
       const res = await fetch(`/api/user/add-post/${currentUser._id}`, {
         method: 'POST',
         headers: {
@@ -127,7 +125,7 @@ const AddPost = ({ searchCollection }) => {
       {/* Modal */}
       <StyledModal
         open={open}
-        onClose={()=>{handleClose(); setFormData({}); setThumbnail(); setThumbnailPercent(0);}}
+        onClose={handleClose}
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >

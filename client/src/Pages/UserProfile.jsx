@@ -1,7 +1,7 @@
 import { Avatar, Box, Button, Card, CardContent, CardMedia, Divider, IconButton, Input, InputLabel, Modal, Stack, TextField, Typography, styled } from '@mui/material';
 import { Add, Favorite, Gif, Home, Image, InsertEmoticon, LocationOn, ModeEdit, MoreHoriz, People, Place, School, Send, Work } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import PostCard from '../components/Feed/PostCard.jsx';
 
 const AvatarCard = styled(Card)({
@@ -196,6 +196,11 @@ function UserProfile() {
                   <Favorite sx={{color:'gray'}}/>
                   <Typography variant='p'>{otherUser.status}</Typography>
                 </StyledStack>
+              }
+
+              {
+                !otherUser.bio && !otherUser.work && !otherUser.primarySchool && !otherUser.secondarySchool && !otherUser.thirtiarySchool && !otherUser.currentAddress && !otherUser.homeAddress && !otherUser.status &&
+                <Typography variant='p' textAlign='center'>This person is Lazy!</Typography>
               }
             </Stack>
           </CardContent>

@@ -1,5 +1,5 @@
 import express from "express";
-import { test, signup, signin, signout, update, addPost, getPostList, getUserList, searchUserById } from "../controllers/userControllers.js";
+import { test, signup, signin, signout, update, addPost, getPostList, getUserList, searchUserById, deletePost } from "../controllers/userControllers.js";
 
 const router = express.Router();
 
@@ -12,5 +12,6 @@ router.post('/add-post/:id', addPost);
 router.get('/post-list', getPostList);
 router.get('/user-list', getUserList);
 router.get('/search-user/:id', searchUserById);
+router.delete('/delete/:id', deletePost);
 
 export default router;

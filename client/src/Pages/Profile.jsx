@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import { app } from "../firebase/firebaseConfig.js";
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { updateUserStart, updateUserFailure, updateUserSuccess, signinFailure } from '../redux/userSlice/userSlice.js';
+import { getPostListStart, getPostListFailure, getPostListSuccess } from '../redux/postSlice/postSlice.js';
 import PostCard from '../components/Feed/PostCard.jsx';
 
 const AvatarCard = styled(Card)({
@@ -54,7 +55,6 @@ const StyledAvatar = styled(Avatar)({
 });
 
 function Profile() {
-  const { postList } = useSelector(state => state.post);
   const { currentUser, loading } = useSelector(state => state.user);
   const [openEditProfile, setOpenEditProfile] = useState(false);
   const [openEditDetails, setOpenEditDetails] = useState(false);
@@ -112,6 +112,33 @@ function Profile() {
       }
     );
   };
+
+  // functionality for fetching posts collection
+  const [postCollection, setPostCollection] = useState([]);
+  const { postLoading } = useSelector(state => state.post);
+  const searchPostCollection = async () => {
+    try {
+      dispatch(getPostListStart());
+      if(postLoading === true) {
+        Swal.showLoading();
+      } else {
+        Swal.hideLoading();
+      };
+      const res = await fetch('/api/user/post-list', { method: 'GET' });
+      const data = await res.json();
+      dispatch(getPostListSuccess(data));
+      setPostCollection(data);
+    } catch (error) {
+      dispatch(getPostListFailure(error));
+      console.log('error fetching!');
+    }
+  };
+  useEffect(() => {
+    searchPostCollection();
+    Swal.showLoading();
+    setTimeout(()=>Swal.close(), 500);
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setOpenEditDetails(false);
@@ -120,7 +147,7 @@ function Profile() {
       if(loading){
         Swal.showLoading();
       } else {
-        Swal.hideLoading();
+        Swal.close();
       };
       const res = await fetch(`/api/user/update/${currentUser._id}`, {
         method: 'POST',
@@ -134,7 +161,11 @@ function Profile() {
       // user update failure
       if(data.success === false){
         dispatch(signinFailure(data));
-        alert('somethin went wrong');
+        Swal.fire({
+          title: "Ooops!",
+          text: `Something went wrong!`,
+          icon: "error"
+        });
         return;
       };
 
@@ -145,14 +176,13 @@ function Profile() {
       setOpenEditDetails(false);
       setProfilePercent(0); 
       setCoverPhotoPercent(0);
-      Swal.fire({
-        title: "Good job!",
-        text: `Successfully updated your background!`,
-        icon: "success"
-      });
     } catch (error) {
       dispatch(updateUserFailure(error));
-      alert('something went wrong');
+      Swal.fire({
+        title: "Ooops!",
+        text: `Something went wrong!`,
+        icon: "error"
+      });
     }
   };
   return (
@@ -310,12 +340,12 @@ function Profile() {
         <ProfileFeed>
           <Stack spacing={3} marginBottom={10}>
             {
-              postList &&
-              postList.map((post, index) => {
+              postCollection &&
+              postCollection.map((post, index) => { 
                 const date = post.createdAt.slice(0, 10);
                 if(post.id === currentUser._id) {
                   return  (
-                    <PostCard key={index} user={post.user} userAvatar={post.userAvatar} timestamps={date} postDescription={post.postDescription} postThumbnail={post.postThumbnail}/>
+                    <PostCard key={index} searchPostCollection={searchPostCollection} postId={post._id} userId={post.id} user={post.user} userAvatar={post.userAvatar} timestamps={date} postDescription={post.postDescription} postThumbnail={post.postThumbnail}/>
                   )
                 }
               })

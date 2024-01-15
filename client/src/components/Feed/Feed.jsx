@@ -2,11 +2,11 @@ import { Box, Stack } from '@mui/material';
 import PostCard from './PostCard';
 import Swal from 'sweetalert2';
 
-const Feed = ({ collection, loading }) => {
+const Feed = ({ collection, loading, searchPostCollection }) => {
   if(loading === true) {
     Swal.showLoading();
   } else {
-    Swal.hideLoading();
+    Swal.close();
   };
   return (
     <Box flex='4' display='flex' justifyContent="center">
@@ -16,7 +16,7 @@ const Feed = ({ collection, loading }) => {
         collection.map((post, index) => {
           const date = post.createdAt.slice(0, 10);
           return  (
-            <PostCard key={index} id={post.id} user={post.user} userAvatar={post.userAvatar} timestamps={date} postDescription={post.postDescription} postThumbnail={post.postThumbnail}/>
+            <PostCard searchPostCollection={searchPostCollection} key={index} postId={post._id} userId={post.id} user={post.user} userAvatar={post.userAvatar} timestamps={date} postDescription={post.postDescription} postThumbnail={post.postThumbnail}/>
           )
         })
       }

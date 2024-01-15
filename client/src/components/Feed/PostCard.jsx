@@ -4,9 +4,10 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { searchUserByIDStart, searchUserByIDFailure, searchUserByIDSuccess } from '../../redux/userSlice/userSlice.js';
+import { deletePostStart, deletePostFailure, deletePostSuccess } from '../../redux/postSlice/postSlice.js';
 import Swal from 'sweetalert2';
 
-const PostCard = ({ id, user, userAvatar, timestamps, postDescription, postThumbnail }) => {
+const PostCard = ({ searchPostCollection, postId, userId, user, userAvatar, timestamps, postDescription, postThumbnail }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -28,7 +29,7 @@ const PostCard = ({ id, user, userAvatar, timestamps, postDescription, postThumb
       } else {
         Swal.hideLoading()
       };
-      const res = await fetch(`/api/user/search-user/${id}`, { method: 'GET' });
+      const res = await fetch(`/api/user/search-user/${userId}`, { method: 'GET' });
       const data = await res.json();
       if(data.success===false) {
         dispatch(searchUserByIDFailure(data));
@@ -40,12 +41,38 @@ const PostCard = ({ id, user, userAvatar, timestamps, postDescription, postThumb
       dispatch(searchUserByIDFailure(error))
     }
   };
+  
+  // functionality for deleting post
+  const handleDeletePost = async () => {
+    handleClose();
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    }).then( async (result) => {
+      if (result.isConfirmed) {
+        dispatch(deletePostStart());
+        const res = await fetch(`/api/user/delete/${postId}`, { method: 'DELETE' });
+        const data = await res.json();
+        if(res.success === false) {
+          dispatch(deletePostFailure(data)); 
+          return;
+        }
+        dispatch(deletePostSuccess());
+        searchPostCollection();
+      }
+    });
+  };
   return (
     <>
       <Card sx={{ maxWidth: 600, minWidth:300 }}>
         <CardHeader
           avatar={
-            <Avatar id={id} onClick={searchUserById} sx={{cursor:'pointer'}} aria-label="recipe" src={userAvatar}/>
+            <Avatar id={userId} onClick={searchUserById} sx={{cursor:'pointer'}} aria-label="recipe" src={userAvatar}/>
           }
           action={
             <IconButton aria-label="settings" onClick={handleClick}>
@@ -84,29 +111,22 @@ const PostCard = ({ id, user, userAvatar, timestamps, postDescription, postThumb
       </Card>
     
       {/* post card menu */}
-      <Menu
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-      >
-        {
-          currentUser._id === postDescription.id
-            ? <MenuItem onClick={handleClose}>
-                <Stack spacing={2} direction='row'>
-                  <Typography>Delete</Typography>
-                  <Delete sx={{color:'gray', ml:'auto'}}/>
-                </Stack>
-              </MenuItem>
-            : <MenuItem onClick={handleClose}>
-                <Stack spacing={2} direction='row'>
-                  <Typography>View Profile</Typography>
-                  <Search sx={{color:'gray'}}/>
-                </Stack>
-              </MenuItem>
-        }
-        
-      </Menu>
+      {
+        currentUser._id === userId &&
+        <Menu
+          id="basic-menu"
+          anchorEl={anchorEl}
+          open={open}
+          onClose={handleClose}
+        >
+          <MenuItem onClick={handleDeletePost}>
+            <Stack spacing={2} direction='row'>
+              <Typography>Delete</Typography>
+              <Delete sx={{color:'gray', ml:'auto'}}/>
+            </Stack>
+          </MenuItem>
+        </Menu>
+      }
     </>
   )
 }

@@ -11,6 +11,8 @@ import Post from '../models/post.model.js';
 import errorHandler from '../utils/errorHandler.js';
 import { MongoClient } from "mongodb";
 
+// USER RELATED FUNCTIONALITIES
+
 // signup new user functionality
 export const signup = async (req, res, next) => {
   // request body
@@ -91,6 +93,40 @@ export const update = async (req, res, next) => {
   }
 };
 
+// get users collection functionality
+export const getUserList = async (req, res, next) => {
+  const mongoURI = process.env.MONGO;
+  const client = new MongoClient(mongoURI);
+  try {
+    await client.connect();
+    const database = client.db('user');
+    const collection = database.collection('users');
+    const data = await collection.find().toArray();
+    res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// find user by id
+export const searchUserById = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.params.id);
+    res.status(200).json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// logout functionality
+export const signout = async (req, res) => {
+  res.clearCookie('access_token').status(200).json('Signout success!');
+};
+
+
+
+// POST RELATED FUNCTIONALITIES
+
 // addPost functionality
 export const addPost = async (req, res, next) => {
   // request body
@@ -121,33 +157,12 @@ export const getPostList = async (req, res, next) => {
   }
 };
 
-// get users collection functionality
-export const getUserList = async (req, res, next) => {
-  const mongoURI = process.env.MONGO;
-  const client = new MongoClient(mongoURI);
+// delete post functionality
+export const deletePost = async (req, res, next) => {
   try {
-    await client.connect();
-    const database = client.db('user');
-    const collection = database.collection('users');
-    const data = await collection.find().toArray();
-    res.status(200).json(data);
+    await Post.findByIdAndDelete(req.params.id);
+    res.status(200).json('Post has been deleted!');
   } catch (error) {
     next(error);
   }
-};
-
-// find employee by id
-export const searchUserById = async (req, res, next) => {
-  try {
-    const user = await User.findById(req.params.id);
-    res.status(200).json(user);
-  } catch (error) {
-    next(error);
-  }
-};
-
-
-// logout functionality
-export const signout = async (req, res) => {
-  res.clearCookie('access_token').status(200).json('Signout success!');
 };
