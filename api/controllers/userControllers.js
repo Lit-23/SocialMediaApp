@@ -60,7 +60,7 @@ export const signin = async (req, res, next) => {
 };
 
 // update user functionality
-export const update = async (req, res, next) => {  
+export const updateUser = async (req, res, next) => {  
   try {
     if (req.body.password) {
       req.body.password = bcryptjs.hashSync(req.body.password, 10);
@@ -152,6 +152,23 @@ export const getPostList = async (req, res, next) => {
     const collection = database.collection('posts');
     const data = await collection.find().toArray();
     res.status(200).json(data);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// update post functionality
+export const updatePost = async (req, res, next) => {
+  try {
+    const updatedPost = await Post.findByIdAndUpdate(req.params.id, {
+        $set: {
+          postDescription: req.body.postDescription,
+          postThumbnail: req.body.postThumbnail,
+        }
+      },
+      { new: true }
+    );
+    res.status(200).json(updatedPost._doc);
   } catch (error) {
     next(error);
   }

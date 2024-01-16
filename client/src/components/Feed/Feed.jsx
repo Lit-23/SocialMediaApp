@@ -3,11 +3,11 @@ import PostCard from './PostCard';
 import Swal from 'sweetalert2';
 
 const Feed = ({ collection, loading, searchPostCollection }) => {
-  if(loading === true) {
-    Swal.showLoading();
-  } else {
-    Swal.close();
-  };
+  // if(loading === true) {
+  //   Swal.showLoading();
+  // } else {
+  //   Swal.close();
+  // };
   return (
     <Box flex='4' display='flex' justifyContent="center">
      <Stack spacing={3} marginBottom={10}>

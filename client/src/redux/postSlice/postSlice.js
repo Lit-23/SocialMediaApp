@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   postList: null,
-  post: null,
+  updatePost: null,
   postLoading: false,
   error: false
 };
@@ -19,8 +19,7 @@ const postSlice = createSlice({
       state.postLoading = false;
       state.error = action.payload;
     },
-    addPostSuccess: (state, action) => {
-      state.post = action.payload;
+    addPostSuccess: (state) => {
       state.postLoading = false;
       state.error = false;
     },
@@ -39,6 +38,20 @@ const postSlice = createSlice({
       state.error = false;
     },
 
+    // update post
+    updatePostStart: (state) => {
+      state.postLoading = true;
+    },
+    updatePostFailure: (state, action) => {
+      state.postLoading = false;
+      state.error = action.payload;
+    },
+    updatePostSuccess: (state, action) => {
+      state.updatePost = action.payload;
+      state.postLoading = false;
+      state.error = false;
+    },
+
     // delete post
     deletePostStart: (state) => {
       state.postLoading = true;
@@ -47,8 +60,7 @@ const postSlice = createSlice({
       state.postLoading = false;
       state.error = action.payload;
     },
-    deletePostSuccess: (state, action) => {
-      state.postList = action.payload;
+    deletePostSuccess: (state) => {
       state.postLoading = false;
       state.error = false;
     },
@@ -62,6 +74,9 @@ export const {
   getPostListStart,
   getPostListFailure,
   getPostListSuccess,
+  updatePostStart,
+  updatePostFailure,
+  updatePostSuccess,
   deletePostStart,
   deletePostFailure,
   deletePostSuccess,

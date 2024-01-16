@@ -23,17 +23,7 @@ const StyledModal = styled(Modal)(({theme}) => ({
   justifyContent:'center'
 }));
 
-const AddPost = ({ searchCollection }) => {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => {
-    setOpen(true);
-    setFormData({
-      ...formData, 
-      id: currentUser._id, 
-      user: `${currentUser.firstName} ${currentUser.lastName}`, 
-      userAvatar: currentUser.profilePicture
-    });
-  };
+const AddPost = ({ searchCollection, open, setOpen, formData, setFormData }) => {
   const handleClose = () => {
     setOpen(false);
     setFormData({});
@@ -43,8 +33,7 @@ const AddPost = ({ searchCollection }) => {
 
   // functionality for adding post
   const { currentUser } = useSelector(state => state.user);
-  const { post, postLoading } = useSelector(state => state.post)
-  const [formData, setFormData] = useState({});
+  const { postLoading } = useSelector(state => state.post)
   const [thumbnail, setThumbnail] = useState();
   const [thumbnailError, setThumbnailError] = useState(false);
   const [thumbnailPercent, setThumbnailPercent] = useState(0);
@@ -111,95 +100,84 @@ const AddPost = ({ searchCollection }) => {
       dispatch(addPostFailure(error));
     };
   };
+
   return (
-    <>
-      {/* Tooltip */}
-      <Box position='fixed' bottom={20} left={{xs:'calc(50% - 28px)', md:20}}>
-        <Tooltip title="Add New Post">
-          <Fab color="primary" onClick={handleOpen}>
-            <Add />
-          </Fab>
-        </Tooltip>
-      </Box>
-      
-      {/* Modal */}
-      <StyledModal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="parent-modal-title"
-        aria-describedby="parent-modal-description"
-      >
-        <Box onSubmit={handlePost} component='form' bgcolor='white' width={400} borderRadius={2} padding={3} gap={5}>
-          <Typography variant="h6" component="h2" color='gray' fontWeight={400} textAlign='center' mb={1}>
-            Create Post
-          </Typography>
-          <Stack spacing={1}>
-            <UserBox>
-              <Avatar 
-                alt="Travis Howard" src={currentUser.profilePicture}
-                sx={{ height:30, width:30 }}
-              />
-              <Typography variant="span" component="h3" fontSize={16} fontWeight={400}>
-                {`${currentUser.firstName} ${currentUser.lastName}`}
-              </Typography>
-            </UserBox>
-            <TextField
-              id="postDescription"
-              multiline
-              rows={3}
-              placeholder={`Whats on your mind, ${currentUser.firstName}?`}
-              variant="standard"
-              sx={{width:'100%'}}
-              onChange={handleChange}
+    <StyledModal
+      open={open}
+      onClose={handleClose}
+      aria-labelledby="parent-modal-title"
+      aria-describedby="parent-modal-description"
+    >
+      <Box onSubmit={handlePost} component='form' bgcolor='white' width={400} borderRadius={2} padding={3} gap={5}>
+        <Typography variant="h6" component="h2" color='gray' fontWeight={400} textAlign='center' mb={1}>
+          Create Post
+        </Typography>
+        <Stack spacing={1}>
+          <UserBox>
+            <Avatar 
+              alt="Travis Howard" src={currentUser.profilePicture}
+              sx={{ height:30, width:30 }}
             />
-            <input
-              type='file'
-              hidden
-              ref={thumbnailRef}
-              accept="image/*"
-              onChange={e=>setThumbnail(e.target.files[0])}
-            />
-            <Stack direction='row' justifyContent='end'>
-              <IconButton onClick={() => thumbnailRef.current.click()}>
-                <Image color='success'/>
-              </IconButton>
-              <IconButton>
-                <InsertEmoticon sx={{color:['#ff9800']}}/>
-              </IconButton>
-              <IconButton>
-                <LocationOn color='error'/>
-              </IconButton>
-              <IconButton>
-                <Gif color='primary'/>
-              </IconButton>
-              <IconButton>
-                <MoreHoriz sx={{color:['#616161']}}/>
-              </IconButton>
-            </Stack>
-            <Typography component='p' textAlign='center'>
-              {
-                thumbnailError 
-                  ? <Typography component='span' color='error'>Error uploading image(file size must be less than 2MB)</Typography> 
-                  : thumbnailPercent > 0 && thumbnailPercent < 100 
-                    ? <Typography component='span' color='success'>
-                      {`Uploading: ${thumbnailPercent}%`}
-                    </Typography>
-                    : thumbnailPercent === 100 && ''
-              }
+            <Typography variant="span" component="h3" fontSize={16} fontWeight={400}>
+              {`${currentUser.firstName} ${currentUser.lastName}`}
             </Typography>
-            {
-              thumbnail &&
-              <Box sx={{width:'100%'}}>
-                <img id='thumbnail' src={formData.postThumbnail}/>
-              </Box>
-            }
-            <Button type='submit' variant='contained'>
-              POST
-            </Button>
+          </UserBox>
+          <TextField
+            id="postDescription"
+            multiline
+            rows={3}
+            placeholder={`Whats on your mind, ${currentUser.firstName}?`}
+            variant="standard"
+            sx={{width:'100%'}}
+            onChange={handleChange}
+          />
+          <input
+            type='file'
+            hidden
+            ref={thumbnailRef}
+            accept="image/*"
+            onChange={e=>setThumbnail(e.target.files[0])}
+          />
+          <Stack direction='row' justifyContent='end'>
+            <IconButton onClick={() => thumbnailRef.current.click()}>
+              <Image color='success'/>
+            </IconButton>
+            <IconButton>
+              <InsertEmoticon sx={{color:['#ff9800']}}/>
+            </IconButton>
+            <IconButton>
+              <LocationOn color='error'/>
+            </IconButton>
+            <IconButton>
+              <Gif color='primary'/>
+            </IconButton>
+            <IconButton>
+              <MoreHoriz sx={{color:['#616161']}}/>
+            </IconButton>
           </Stack>
-        </Box>
-      </StyledModal>
-    </>
+          <Typography component='p' textAlign='center'>
+            {
+              thumbnailError 
+                ? <Typography component='span' color='error'>Error uploading image(file size must be less than 2MB)</Typography> 
+                : thumbnailPercent > 0 && thumbnailPercent < 100 
+                  ? <Typography component='span' color='success'>
+                    {`Uploading: ${thumbnailPercent}%`}
+                  </Typography>
+                  : thumbnailPercent === 100 && ''
+            }
+          </Typography>
+          {
+            thumbnail &&
+            <Box sx={{width:'100%'}}>
+              <img id='thumbnail' src={formData.postThumbnail}/>
+            </Box>
+          }
+          <Button type='submit' variant='contained'>
+            POST
+          </Button>
+        </Stack>
+      </Box>
+    </StyledModal>
   )
 }
 

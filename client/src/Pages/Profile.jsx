@@ -8,6 +8,7 @@ import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/
 import { updateUserStart, updateUserFailure, updateUserSuccess, signinFailure } from '../redux/userSlice/userSlice.js';
 import { getPostListStart, getPostListFailure, getPostListSuccess } from '../redux/postSlice/postSlice.js';
 import PostCard from '../components/Feed/PostCard.jsx';
+import AddPost from '../components/Feed/AddPost.jsx';
 
 const AvatarCard = styled(Card)({
   maxWidth: 800,
@@ -113,6 +114,21 @@ function Profile() {
     );
   };
 
+  // add post functionality
+  const { updatePost } = useSelector(state => state.post);
+  const [openPostModal, setOpenPostModal] = useState(false);
+  const [postFormData, setPostFormData] = useState({});
+  const handleOpenPostModal = () => {
+    setOpenPostModal(true);
+    setPostFormData({
+      ...postFormData, 
+      id: currentUser._id, 
+      user: `${currentUser.firstName} ${currentUser.lastName}`, 
+      userAvatar: currentUser.profilePicture,
+
+    });
+  };
+
   // functionality for fetching posts collection
   const [postCollection, setPostCollection] = useState([]);
   const { postLoading } = useSelector(state => state.post);
@@ -210,7 +226,7 @@ function Profile() {
               </Typography>
             </Stack>
             <Box display='flex' gap={1} justifyContent='end'>
-              <Button variant='contained' startIcon={<Add/>} onClick={()=>setOpenAddPost(true)}>
+              <Button variant='contained' startIcon={<Add/>} onClick={handleOpenPostModal}>
                 <Typography fontSize={12}>
                   Add Post
                 </Typography>
@@ -547,57 +563,7 @@ function Profile() {
       </StyledModal>
 
       {/* Add Post Modal */}
-      <StyledModal
-        open={openAddPost}
-        onClose={()=>setOpenAddPost(false)}
-        aria-labelledby="parent-modal-title"
-        aria-describedby="parent-modal-description"
-      >
-        <Box component='form' bgcolor='white' width={400} borderRadius={2} padding={3} gap={5}>
-          <Typography variant="h6" component="h2" color='gray' fontWeight={400} textAlign='center' mb={1}>
-            Create Post
-          </Typography>
-          <Stack spacing={2}>
-            <UserBox>
-              <Avatar 
-                alt={currentUser.lastName} src={currentUser.profilePicture}
-                sx={{ height:30, width:30 }}
-              />
-              <Typography variant="span" component="h3" fontSize={16} fontWeight={400}>
-                {`${currentUser.firstName} ${currentUser.lastName}`}
-              </Typography>
-            </UserBox>
-            <TextField
-              id="standard-multiline-static"
-              multiline
-              rows={3}
-              placeholder={`Whats on your mind, ${currentUser.firstName}?`}
-              variant="standard"
-              sx={{width:'100%'}}
-            />
-            <Stack direction='row' justifyContent='end'>
-              <IconButton>
-                <Image color='success'/>
-              </IconButton>
-              <IconButton>
-                <InsertEmoticon sx={{color:['#ff9800']}}/>
-              </IconButton>
-              <IconButton>
-                <LocationOn color='error'/>
-              </IconButton>
-              <IconButton>
-                <Gif color='primary'/>
-              </IconButton>
-              <IconButton>
-                <MoreHoriz sx={{color:['#616161']}}/>
-              </IconButton>
-            </Stack>
-            <Button type='submit' variant='contained'>
-              POST
-            </Button>
-          </Stack>
-        </Box>
-      </StyledModal>
+      <AddPost searchCollection={searchPostCollection} open={openPostModal} setOpen={setOpenPostModal} formData={postFormData} setFormData={setPostFormData}/>
     </>
   )
 }

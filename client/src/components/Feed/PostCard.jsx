@@ -1,11 +1,25 @@
-import { Bookmark, BookmarkBorder, Delete, Favorite, FavoriteBorder, MoreVert, Search, Share } from '@mui/icons-material';
-import { Avatar, Card, CardActions, CardContent, CardHeader, CardMedia, Checkbox, IconButton, Menu, MenuItem, Stack, Typography } from '@mui/material';
-import { useState } from 'react';
+import { Bookmark, BookmarkBorder, Delete, Favorite, FavoriteBorder, Gif, Image, InsertEmoticon, LocationOn, ModeEdit, MoreHoriz, MoreVert, Share } from '@mui/icons-material';
+import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Checkbox, IconButton, Menu, MenuItem, Modal, Stack, TextField, Typography, styled } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { searchUserByIDStart, searchUserByIDFailure, searchUserByIDSuccess } from '../../redux/userSlice/userSlice.js';
-import { deletePostStart, deletePostFailure, deletePostSuccess } from '../../redux/postSlice/postSlice.js';
+import { deletePostStart, deletePostFailure, deletePostSuccess, updatePostStart, updatePostFailure, updatePostSuccess } from '../../redux/postSlice/postSlice.js';
 import Swal from 'sweetalert2';
+import { app } from '../../firebase/firebaseConfig.js';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+
+const UserBox = styled(Box)(({theme}) => ({
+  display:'flex',
+  alignItems:'center',
+  gap:10
+}));
+
+const StyledModal = styled(Modal)(({theme}) => ({
+  display:'flex',
+  alignItems:'center',
+  justifyContent:'center'
+}));
 
 const PostCard = ({ searchPostCollection, postId, userId, user, userAvatar, timestamps, postDescription, postThumbnail }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -39,6 +53,80 @@ const PostCard = ({ searchPostCollection, postId, userId, user, userAvatar, time
       navigate('/user-profile')
     } catch (error) {
       dispatch(searchUserByIDFailure(error))
+    }
+  };
+
+  // functionality for editing post
+  const { updatePost } = useSelector(state => state.post);
+  const [openEditPost, setOpenEditPost] = useState(false);
+  const [formData, setFormData] = useState({});
+  const [thumbnail, setThumbnail] = useState();
+  const [thumbnailError, setThumbnailError] = useState(false);
+  const [thumbnailPercent, setThumbnailPercent] = useState(0);
+  const thumbnailRef = useRef();
+  const handleChange = (e) => {
+    setFormData({
+      ...formData, [e.target.id]: e.target.value
+    });
+  };
+  console.log(formData);
+  useEffect(() => {
+    if(thumbnail) {
+      handleUpload(thumbnail);
+    }
+  }, [thumbnail]);
+  
+  const handleUpload = async () => {
+    const storage = getStorage(app);
+    const filename = new Date().getTime() + thumbnail.name;
+    const imageRef = ref(storage, filename);
+    const uploadTask = uploadBytesResumable(imageRef, thumbnail);
+    uploadTask.on('state_changed', 
+      (snapshot) => {
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setThumbnailPercent(Math.round(progress));
+        console.log('Upload is ' + progress + '% done');
+      }, 
+      (error) => {
+        setThumbnailError(true);
+      }, 
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          setFormData({ ...formData, postThumbnail: downloadURL })
+        });
+      }
+    );
+  };
+
+  const handleOpenEditPost = () => {
+    if(postThumbnail){
+      setFormData({...formData, postDescription, postThumbnail});
+    } else {
+      setFormData({...formData, postDescription });
+    };
+    setOpenEditPost(true);
+    handleClose();
+  };
+  
+  const { postLoading } = useSelector(state => state.post)
+  const handleEditPost = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updatePostStart());
+      const res = await fetch(`/api/user/update-post/${postId}`, { 
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      dispatch(updatePostSuccess(data));
+      searchPostCollection();
+      setOpenEditPost(false);
+    } catch (error) {
+      dispatch(updatePostFailure(error));
+      alert('error update')
     }
   };
   
@@ -118,15 +206,105 @@ const PostCard = ({ searchPostCollection, postId, userId, user, userAvatar, time
           anchorEl={anchorEl}
           open={open}
           onClose={handleClose}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          sx={{mt:'40px'}}
         >
-          <MenuItem onClick={handleDeletePost}>
-            <Stack spacing={2} direction='row'>
-              <Typography>Delete</Typography>
-              <Delete sx={{color:'gray', ml:'auto'}}/>
-            </Stack>
+          <MenuItem onClick={handleOpenEditPost}>
+            <Typography fontSize={14}>Edit</Typography>
+            <ModeEdit sx={{color:'gray', ml:'auto', width:20}}/>
+          </MenuItem>
+          <MenuItem onClick={handleDeletePost} sx={{width:120}}>
+            <Typography fontSize={14}>Delete</Typography>
+            <Delete sx={{color:'gray', ml:'auto', width:20}}/>
           </MenuItem>
         </Menu>
       }
+
+      {/* edit post modal */}
+      <StyledModal
+        open={openEditPost}
+        onClose={()=>setOpenEditPost(false)}
+        aria-labelledby="parent-modal-title"
+        aria-describedby="parent-modal-description"
+      >
+        <Box onSubmit={handleEditPost} component='form' bgcolor='white' width={400} borderRadius={2} padding={3} gap={5}>
+          <Typography variant="h6" component="h2" color='gray' fontWeight={400} textAlign='center' mb={1}>
+            Edit Post
+          </Typography>
+          <Stack spacing={1}>
+            <UserBox>
+              <Avatar 
+                alt="Travis Howard" src={currentUser.profilePicture}
+                sx={{ height:30, width:30 }}
+              />
+              <Typography variant="span" component="h3" fontSize={16} fontWeight={400}>
+                {`${currentUser.firstName} ${currentUser.lastName}`}
+              </Typography>
+            </UserBox>
+            <TextField
+              id="postDescription"
+              multiline
+              rows={3}
+              placeholder={`Whats on your mind, ${currentUser.firstName}?`}
+              variant="standard"
+              sx={{width:'100%'}}
+              defaultValue={postDescription}
+              onChange={handleChange}
+            />
+            <input
+              type='file'
+              hidden
+              ref={thumbnailRef}
+              accept="image/*"
+              onChange={e=>setThumbnail(e.target.files[0])}
+            />
+            <Stack direction='row' justifyContent='end'>
+              <IconButton onClick={() => thumbnailRef.current.click()}>
+                <Image color='success'/>
+              </IconButton>
+              <IconButton>
+                <InsertEmoticon sx={{color:['#ff9800']}}/>
+              </IconButton>
+              <IconButton>
+                <LocationOn color='error'/>
+              </IconButton>
+              <IconButton>
+                <Gif color='primary'/>
+              </IconButton>
+              <IconButton>
+                <MoreHoriz sx={{color:['#616161']}}/>
+              </IconButton>
+            </Stack>
+            <Typography component='p' textAlign='center'>
+              {
+                thumbnailError 
+                  ? <Typography component='span' color='error'>Error uploading image(file size must be less than 2MB)</Typography> 
+                  : thumbnailPercent > 0 && thumbnailPercent < 100 
+                    ? <Typography component='span' color='success'>
+                      {`Uploading: ${thumbnailPercent}%`}
+                    </Typography>
+                    : thumbnailPercent === 100 && ''
+              }
+            </Typography>
+            {
+              thumbnail || postThumbnail &&
+              <Box sx={{width:'100%'}}>
+                <img id='thumbnail' src={formData.postThumbnail || postThumbnail}/>
+              </Box>
+            }
+            <Button type='submit' variant='contained'>
+              { postLoading ? 'LOADING...' : 'SAVE' }
+            </Button>
+          </Stack>
+        </Box>
+      </StyledModal>
     </>
   )
 }
