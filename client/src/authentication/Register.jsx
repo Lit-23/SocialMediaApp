@@ -4,7 +4,9 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { signupStart, signupFailure, signupSuccess } from "../redux/userSlice/userSlice.js";
+import { signupStart, signupFailure, signupSuccess, signinSuccess } from "../redux/userSlice/userSlice.js";
+import { app } from '../firebase/firebaseConfig.js';
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
 
 const Register = () => {
@@ -16,7 +18,6 @@ const Register = () => {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value })
   };
-  console.log(formData)
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,6 +55,32 @@ const Register = () => {
     } else {
       setError(true);
     };
+  };
+
+  // google signup functionality
+  const handleGoogleClick = async () => {
+    try {
+      const auth = getAuth(app);
+      const provider = new GoogleAuthProvider();
+      const result = await signInWithPopup(auth, provider);
+      const res = await fetch('/api/user/google', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          profilePicture: result.user.photoURL,
+          firstName: result.user.displayName.split(" ")[0],
+          lastName: result.user.displayName.split(" ")[1],
+          email: result.user.email,
+        }),
+      });
+      const data = await res.json();
+      dispatch(signinSuccess(data));
+      navigate('/');
+    } catch (error) {
+      
+    }
   };
 
   return (
@@ -112,10 +139,10 @@ const Register = () => {
                 onChange={handleChange}
               />
               {
-                error && <Typography variant="p" color="error" marginX={5} marginBottom={3}>Something went wrong!</Typography>
-                // ?  <p className='text-red-700 mx-5 mb-3'>{error.message}</p>
-                // || <p className='text-red-700 mx-5 mb-3'>Something went wrong!</p>
-                // :  ''
+                error && 
+                <Typography variant="p" color="error" marginX={5} marginBottom={3}>
+                  Something went wrong!
+                </Typography>
               }
               <Button 
                 type="submit" 
@@ -130,6 +157,7 @@ const Register = () => {
                 variant="contained" 
                 color='error'
                 sx={{fontWeight:300, py:['12px']}}
+                onClick={handleGoogleClick}
               >
                 SIGNUP WITH GOOGLE
               </Button>

@@ -46,7 +46,7 @@ const AddPost = ({ searchCollection, open, setOpen, formData, setFormData }) => 
   };
   useEffect(() => {
     if(thumbnail) {
-      handleUpload(thumbnail);
+      handleUpload();
     }
   }, [thumbnail]);
   const handleUpload = async () => {

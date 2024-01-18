@@ -31,6 +31,43 @@ export const signup = async (req, res, next) => {
   }
 };
 
+// signup with google
+export const google = async (req, res, next) => {
+  try {
+    // verify user
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if(user) {
+      // generate access token
+      const token = jwt.sign({id: user._id}, process.env.JWT_SECRET);
+      const { password: hashedPassword, ...rest } = user._doc;
+    
+      // sign in expiry date (1day)
+      const expiryDate = new Date(Date.now() + 86400000); 
+      // res
+      res.cookie('access_token', token, { httpOnly: true, expires: expiryDate }).status(200).json(rest);
+    } else {
+      // request body
+      const generatePassword = Math.random().toString(36).slice(-8);
+      const hashedPassword = bcryptjs.hashSync(generatePassword, 10);
+      const newUser = new User({ 
+        profilePicture: req.body.profilePicture, 
+        firstName: req.body.firstName, 
+        lastName: req.body.lastName, 
+        email: req.body.email, 
+        password: hashedPassword 
+      });
+      await newUser.save();
+      const token = jwt.sign({id: newUser._id}, process.env.JWT_SECRET);
+      const { password: hashedPassword2, ...rest } = newUser._doc;
+      const expiryDate = new Date(Date.now() + 86400000); 
+      res.cookie('access_token', token, { httpOnly: true, expires: expiryDate }).status(200).json(rest);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 // signin functionality
 export const signin = async (req, res, next) => {
   // req.body

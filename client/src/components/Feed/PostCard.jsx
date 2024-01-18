@@ -60,6 +60,7 @@ const PostCard = ({ searchPostCollection, postId, userId, user, userAvatar, time
   const { updatePost } = useSelector(state => state.post);
   const [openEditPost, setOpenEditPost] = useState(false);
   const [formData, setFormData] = useState({});
+  
   const [thumbnail, setThumbnail] = useState();
   const [thumbnailError, setThumbnailError] = useState(false);
   const [thumbnailPercent, setThumbnailPercent] = useState(0);
@@ -69,13 +70,13 @@ const PostCard = ({ searchPostCollection, postId, userId, user, userAvatar, time
       ...formData, [e.target.id]: e.target.value
     });
   };
-  console.log(formData);
+
   useEffect(() => {
     if(thumbnail) {
-      handleUpload(thumbnail);
+      handleUpload();
     }
   }, [thumbnail]);
-  
+
   const handleUpload = async () => {
     const storage = getStorage(app);
     const filename = new Date().getTime() + thumbnail.name;
@@ -93,6 +94,7 @@ const PostCard = ({ searchPostCollection, postId, userId, user, userAvatar, time
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setFormData({ ...formData, postThumbnail: downloadURL })
+          console.log(formData.postThumbnail)
         });
       }
     );
@@ -293,12 +295,9 @@ const PostCard = ({ searchPostCollection, postId, userId, user, userAvatar, time
                     : thumbnailPercent === 100 && ''
               }
             </Typography>
-            {
-              thumbnail || postThumbnail &&
-              <Box sx={{width:'100%'}}>
-                <img id='thumbnail' src={formData.postThumbnail || postThumbnail}/>
-              </Box>
-            }
+            <Box sx={{width:'100%'}}>
+              <img id='thumbnail' src={formData.postThumbnail || postThumbnail}/>
+            </Box>
             <Button type='submit' variant='contained'>
               { postLoading ? 'LOADING...' : 'SAVE' }
             </Button>
