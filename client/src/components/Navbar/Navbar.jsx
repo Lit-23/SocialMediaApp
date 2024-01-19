@@ -192,7 +192,7 @@ const NavBar = () => {
           <MenuItem onClick={()=>{handleCloseAvatar(); navigate('/profile');}}>{`${currentUser.firstName} ${currentUser.lastName}`}</MenuItem>
         }
         <Divider/>
-        <MenuItem onClick={handleCloseAvatar}>
+        <MenuItem onClick={()=>{handleCloseAvatar(); navigate('/settings');}}>
           <Typography>Settings</Typography>
           <Settings sx={{color:'gray', ml:'auto'}}/>
         </MenuItem>

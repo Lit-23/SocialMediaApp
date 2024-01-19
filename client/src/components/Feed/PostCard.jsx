@@ -37,6 +37,10 @@ const PostCard = ({ searchPostCollection, postId, userId, user, userAvatar, time
   const searchUserById = async (event) => {
     const id = event.currentTarget.id;
     try {
+      if(currentUser._id === userId) {
+        navigate('/profile');
+        return;
+      };
       dispatch(searchUserByIDStart());
       if(loading){
         Swal.showLoading()
@@ -57,7 +61,6 @@ const PostCard = ({ searchPostCollection, postId, userId, user, userAvatar, time
   };
 
   // functionality for editing post
-  const { updatePost } = useSelector(state => state.post);
   const [openEditPost, setOpenEditPost] = useState(false);
   const [formData, setFormData] = useState({});
   

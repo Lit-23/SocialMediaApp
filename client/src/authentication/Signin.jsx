@@ -1,10 +1,10 @@
-import { Google } from "@mui/icons-material";
 import { Box, Button, Card, CardContent, Divider, Stack, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { signinStart, signinFailure, signinSuccess } from "../redux/userSlice/userSlice.js";
 import { useDispatch, useSelector } from "react-redux";
+import GoogleAuth from "./GoogleAuth.jsx";
 
 
 const Signin = () => {
@@ -88,14 +88,7 @@ const Signin = () => {
                 SIGNIN
               </Button>
               <Divider sx={{fontWeight:300}}>OR</Divider>
-              <Button 
-                startIcon={<Google />}
-                variant="contained" 
-                color='error'
-                sx={{fontWeight:300, py:['12px']}}
-              >
-                SIGNIN WITH GOOGLE
-              </Button>
+              <GoogleAuth />
               <Box color='gray' display='flex' justifyContent='center' gap={1}>
                 <Typography textAlign='center'>Dont have an account yet?</Typography>
                 <Typography sx={{"&:hover":{cursor:'pointer', textDecoration:'underline', transition: 'text-decoration 0.3s ease'}}} color='primary' onClick={()=>{navigate('/register')}}>Signup</Typography>

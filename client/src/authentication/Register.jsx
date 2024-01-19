@@ -4,9 +4,8 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { signupStart, signupFailure, signupSuccess, signinSuccess } from "../redux/userSlice/userSlice.js";
-import { app } from '../firebase/firebaseConfig.js';
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { signupStart, signupFailure, signupSuccess } from "../redux/userSlice/userSlice.js";
+import GoogleAuth from "./GoogleAuth.jsx";
 
 
 const Register = () => {
@@ -23,12 +22,9 @@ const Register = () => {
     e.preventDefault();
     if(formData.password === formData.confirmPassword) {
       try {
+        Swal.showLoading();
+        setTimeout(()=>Swal.close(), 800)
         dispatch(signupStart());
-        if(loading) {
-          Swal.showLoading();
-        } else {
-          Swal.hideLoading();
-        };
 
         // fetch data
         const res = await fetch(`/api/user/signup`, {
@@ -55,32 +51,6 @@ const Register = () => {
     } else {
       setError(true);
     };
-  };
-
-  // google signup functionality
-  const handleGoogleClick = async () => {
-    try {
-      const auth = getAuth(app);
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      const res = await fetch('/api/user/google', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          profilePicture: result.user.photoURL,
-          firstName: result.user.displayName.split(" ")[0],
-          lastName: result.user.displayName.split(" ")[1],
-          email: result.user.email,
-        }),
-      });
-      const data = await res.json();
-      dispatch(signinSuccess(data));
-      navigate('/');
-    } catch (error) {
-      
-    }
   };
 
   return (
@@ -152,15 +122,7 @@ const Register = () => {
                 SIGNUP
               </Button>
               <Divider sx={{fontWeight:300}}>OR</Divider>
-              <Button 
-                startIcon={<Google />}
-                variant="contained" 
-                color='error'
-                sx={{fontWeight:300, py:['12px']}}
-                onClick={handleGoogleClick}
-              >
-                SIGNUP WITH GOOGLE
-              </Button>
+              <GoogleAuth />
               <Box color='gray' display='flex' justifyContent='center' gap={1}>
                 <Typography textAlign='center'>Already have an account?</Typography>
                 <Typography sx={{"&:hover":{cursor:'pointer', textDecoration:'underline', transition: 'text-decoration 0.3s ease'}}} color='primary' onClick={()=>{navigate('/')}}>Signin</Typography>

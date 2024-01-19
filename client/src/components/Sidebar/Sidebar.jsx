@@ -1,7 +1,9 @@
 import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Switch } from '@mui/material';
 import { AccountBox, Description, Group, Home, Mail, ModeNight, Person, Settings, Storefront } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
 
 const Sidebar = () => {
+  const navigate = useNavigate();
   return (
     <Box flex='1' display={{xs:'none', lg:'block'}}>
       <Box position='fixed'>
@@ -47,7 +49,7 @@ const Sidebar = () => {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton component="a" href='#settings'>
+            <ListItemButton component="a" onClick={()=>navigate('/settings')}>
               <ListItemIcon>
                 <Settings />
               </ListItemIcon>
@@ -55,7 +57,7 @@ const Sidebar = () => {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton component="a" href='#profile'>
+            <ListItemButton component="a" onClick={()=>navigate('/profile')}>
               <ListItemIcon>
                 <AccountBox />
               </ListItemIcon>

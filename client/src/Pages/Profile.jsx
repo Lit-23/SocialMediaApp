@@ -125,7 +125,6 @@ function Profile() {
       id: currentUser._id, 
       user: `${currentUser.firstName} ${currentUser.lastName}`, 
       userAvatar: currentUser.profilePicture,
-
     });
   };
 
@@ -138,7 +137,7 @@ function Profile() {
       if(postLoading === true) {
         Swal.showLoading();
       } else {
-        Swal.hideLoading();
+        Swal.close();
       };
       const res = await fetch('/api/user/post-list', { method: 'GET' });
       const data = await res.json();
@@ -215,11 +214,11 @@ function Profile() {
               image={currentUser.coverPhoto}
               alt="Cover Photo"
             />
-            <Stack direction='row' alignItems='center' spacing={2}>
+            <Stack direction='row' alignItems='center' spacing={2} sx={{marginBottom:{xs:1, sm:0}}}>
               <Avatar
                 alt="profile" 
                 src={currentUser.profilePicture}
-                sx={{height:120, width:120}}
+                sx={{height:{xs: 80,md:120}, width:{xs: 80,md:120}}}
               />
               <Typography variant='h6' fontWeight={300}>
                 {`${currentUser.firstName} ${currentUser.lastName}`}

@@ -38,7 +38,7 @@ const MainPage = () => {
       if(postLoading === true) {
         Swal.showLoading();
       } else {
-        Swal.hideLoading();
+        Swal.close();
       };
       const res = await fetch('/api/user/post-list', { method: 'GET' });
       const data = await res.json();
@@ -63,7 +63,7 @@ const MainPage = () => {
       if(loading === true) {
         Swal.showLoading();
       } else {
-        Swal.hideLoading();
+        Swal.close();
       };
       const res = await fetch('/api/user/user-list', { method: 'GET' });
       const data = await res.json();

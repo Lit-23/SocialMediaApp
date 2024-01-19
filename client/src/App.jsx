@@ -4,6 +4,7 @@ import Register from "./authentication/Register";
 import MainPage from "./Pages/MainPage";
 import Profile from "./Pages/Profile";
 import OtherUserProfile from "./Pages/UserProfile";
+import Settings from "./components/settings/Settings";
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
           <Route index element={<MainPage/>}/>
           <Route path='/profile' element={<Profile/>}/>
           <Route path='/user-profile' element={<OtherUserProfile/>}/>
+          <Route path="/settings" element={<Settings/>} />
         </Route>
       </Routes>
     </BrowserRouter>
