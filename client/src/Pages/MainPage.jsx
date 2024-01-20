@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import { Add } from '@mui/icons-material';
 
-const MainPage = () => {
+const MainPage = ({ mode, setMode }) => {
   const { authenticated } = useSelector(state => state.user);
 
   // add post functionality
@@ -38,7 +38,7 @@ const MainPage = () => {
       if(postLoading === true) {
         Swal.showLoading();
       } else {
-        Swal.close();
+        setTimeout(()=>Swal.close(), 500);
       };
       const res = await fetch('/api/user/post-list', { method: 'GET' });
       const data = await res.json();
@@ -63,13 +63,12 @@ const MainPage = () => {
       if(loading === true) {
         Swal.showLoading();
       } else {
-        Swal.close();
+        setTimeout(()=>Swal.close(), 500);
       };
       const res = await fetch('/api/user/user-list', { method: 'GET' });
       const data = await res.json();
       dispatch(getUserListSuccess(data));
       setUserCollection(data);
-      console.log(postCollection);
     } catch (error) {
       dispatch(getUserListFailure(error));
       console.log('error fetching!');
@@ -84,9 +83,9 @@ const MainPage = () => {
     <>
       {
         authenticated
-        ? <Box>
+        ? <Box bgcolor={"background.default"} color={"text.primary"}>
             <Stack direction='row'>
-              <Sidebar/>
+              <Sidebar setMode={setMode} mode={mode}/>
               <Feed collection={postCollection} loading={postLoading} searchPostCollection={searchPostCollection} />
               <Rightbar collection={userCollection}/>
             </Stack>

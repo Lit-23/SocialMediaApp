@@ -19,7 +19,7 @@ const MessagesCard = ({open, setOpen}) => {
       aria-labelledby="parent-modal-title"
       aria-describedby="parent-modal-description"
     > 
-      <Box component='form' bgcolor='white' width={400}  borderRadius={2} padding={3} gap={5}>
+      <Box component='form' bgcolor={"background.default"} color={"text.primary"} width={400}  borderRadius={2} padding={3} gap={5}>
         <Typography variant="h6" component="h2" textAlign='center' color='gray' fontWeight={400} mb={1}>
           Messages
         </Typography>

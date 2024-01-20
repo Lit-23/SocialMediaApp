@@ -5,21 +5,51 @@ import MainPage from "./Pages/MainPage";
 import Profile from "./Pages/Profile";
 import OtherUserProfile from "./Pages/UserProfile";
 import Settings from "./components/settings/Settings";
+import { ThemeProvider, createTheme } from "@mui/material";
+import { useState } from "react";
+// import { useSelector } from "react-redux";
+
+// themeMode
 
 function App() {
+  // const { themeMode } = useSelector(state => state.user);
+  const [mode, setMode] = useState("light");
+
+  const darkTheme = createTheme({
+    palette: {
+      mode: mode,
+    },
+  });
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Layout />}>
-          <Route path="/register" element={<Register/>}/>
-          <Route index element={<MainPage/>}/>
-          <Route path='/profile' element={<Profile/>}/>
-          <Route path='/user-profile' element={<OtherUserProfile/>}/>
-          <Route path="/settings" element={<Settings/>} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <ThemeProvider theme={darkTheme}>
+      <BrowserRouter>
+        <Routes>
+          <Route 
+            path='/' 
+            Component={() => (
+              <Layout setMode={setMode} mode={mode}/>
+            )}
+          >
+            <Route path="/register" element={<Register/>}/>
+            <Route 
+              index
+              Component={() => (
+                <MainPage setMode={setMode} mode={mode}/>
+              )} 
+            />
+            <Route path='/profile' element={<Profile/>}/>
+            <Route path='/user-profile' element={<OtherUserProfile/>}/>
+            <Route 
+              path="/settings"
+              Component={() => (
+                <Settings setMode={setMode} mode={mode}/>
+              )} 
+            />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   )
 }
 

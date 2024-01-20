@@ -59,7 +59,6 @@ function Profile() {
   const { currentUser, loading } = useSelector(state => state.user);
   const [openEditProfile, setOpenEditProfile] = useState(false);
   const [openEditDetails, setOpenEditDetails] = useState(false);
-  const [openAddPost, setOpenAddPost] = useState(false);
   const [formData, setFormData] = useState({});
 
   const [coverPhoto, setCoverPhoto] = useState();
@@ -115,7 +114,6 @@ function Profile() {
   };
 
   // add post functionality
-  const { updatePost } = useSelector(state => state.post);
   const [openPostModal, setOpenPostModal] = useState(false);
   const [postFormData, setPostFormData] = useState({});
   const handleOpenPostModal = () => {
@@ -377,7 +375,7 @@ function Profile() {
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
-        <Box sx={{maxHeight: '95vh', overflow: 'auto'}}  onSubmit={handleSubmit} component='form' bgcolor='white' width={600} borderRadius={2} padding={3} gap={5}>
+        <Box bgcolor={"background.default"} color={"text.primary"} sx={{maxHeight: '95vh', overflow: 'auto'}}  onSubmit={handleSubmit} component='form' width={600} borderRadius={2} padding={3} gap={5}>
           <Typography variant="h6" component="h2" color='gray' fontWeight={400} textAlign='center' mb={1}>
             Edit Profile
           </Typography>
@@ -453,7 +451,7 @@ function Profile() {
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
-        <Box sx={{maxHeight: '95vh', overflow: 'auto'}} onSubmit={handleSubmit} component='form' bgcolor='white' width={600} borderRadius={2} padding={3} gap={5}>
+        <Box bgcolor={"background.default"} color={"text.primary"} sx={{maxHeight: '95vh', overflow: 'auto'}} onSubmit={handleSubmit} component='form' width={600} borderRadius={2} padding={3} gap={5}>
           <Typography variant="h6" component="h2" color='gray' fontWeight={400} textAlign='center' mb={1}>
             Edit Details
           </Typography>

@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import Swal from "sweetalert2";
 
 
-export default function Settings() {
+export default function Settings({ mode, setMode }) {
   const [showPassword, setShowPassword] = useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (event) => {
@@ -13,7 +13,6 @@ export default function Settings() {
   };
 
   const { currentUser } = useSelector(state => state.user);
-  console.log(currentUser)
   const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
   const handleChange = (e) => {
@@ -27,21 +26,39 @@ export default function Settings() {
       Swal.showLoading();
       if (formData.password !== formData.confirmPassword) {
         setError('Confirm Password dont match!');
+        Swal.close();
         return;
       };
-      const res = await fetch(`/api/user/update/${currentUser._id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
-      const data = await res.json();
-      setError(null); 
+      if (formData.password.length <= 5) {
+        setError('Password must be atleast 6 character!');
+        Swal.close();
+        return;
+      };
       Swal.fire({
-        title: "Good job!",
-        text: `Changed password success!`,
-        icon: "success"
+        title: "Are you sure?",
+        text: "You want to change your password!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes!"
+      }).then( async (result) => {
+        if (result.isConfirmed) {
+          const res = await fetch(`/api/user/update/${currentUser._id}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+          });
+          const data = await res.json();
+          setError(null); 
+          Swal.fire({
+            title: "Good job!",
+            text: `Changed password success!`,
+            icon: "success"
+          });
+        }
       });
     } catch (error) {
       setError(error.message);
@@ -49,8 +66,12 @@ export default function Settings() {
     }
   };
 
+  const handleTheme = (event) => {
+    setChecked(event.target.checked);
+  };
+
   return (
-    // <Box sx={{display:"flex", justifyContent:'center'}}>
+    <Box bgcolor={"background.default"} color={"text.primary"} height={['100vh']}>
       <Card sx={{maxWidth:600, mx:'auto'}}>
         <CardContent>
           <Typography variant="h6" fontWeight={400}>Settings</Typography>
@@ -116,10 +137,13 @@ export default function Settings() {
           {/* Dispaly Section */}
           <Stack direction='row'>
             <Typography fontSize={18} fontWeight={300} mt={2} mr='auto'>Dark Mode Setting</Typography>
-            <Switch sx={{mt:1}}/>
+              <Switch onChange={e=>{
+                setMode(mode === "light" ? "dark" : "light")
+                }}
+              />
           </Stack>
         </CardContent>
       </Card>
-    // </Box>
+    </Box>
   )
 }

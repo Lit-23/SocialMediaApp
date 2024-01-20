@@ -108,7 +108,7 @@ const AddPost = ({ searchCollection, open, setOpen, formData, setFormData }) => 
       aria-labelledby="parent-modal-title"
       aria-describedby="parent-modal-description"
     >
-      <Box onSubmit={handlePost} component='form' bgcolor='white' width={400} borderRadius={2} padding={3} gap={5}>
+      <Box bgcolor={"background.default"} color={"text.primary"} onSubmit={handlePost} component='form' width={400} borderRadius={2} padding={3} gap={5}>
         <Typography variant="h6" component="h2" color='gray' fontWeight={400} textAlign='center' mb={1}>
           Create Post
         </Typography>

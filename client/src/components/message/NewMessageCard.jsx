@@ -26,7 +26,7 @@ const NewMessageCard = () => {
     <>
       {/* Tooltip */}
       <Box position='fixed' bottom={20} right={20} display={{xs:'none', md:'block'}}>
-        <Tooltip title="Add New Post">
+        <Tooltip title="New Message">
           <Fab color="gray" onClick={handleOpen}>
             <MapsUgc />
           </Fab>
@@ -40,7 +40,7 @@ const NewMessageCard = () => {
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >
-        <Box component='form' bgcolor='white' width={400} borderRadius={2} padding={3} gap={5}>
+        <Box bgcolor={"background.default"} color={"text.primary"} component='form' width={400} borderRadius={2} padding={3} gap={5}>
           <Typography variant="h6" component="h2" color='gray' fontWeight={400} textAlign='center' mb={1}>
             New Message
           </Typography>
@@ -48,13 +48,6 @@ const NewMessageCard = () => {
             <UserBox>
               <InputLabel htmlFor='send-to'>To:</InputLabel>
               <Input id='send-to' sx={{width:'90%'}}/>
-              {/* <Avatar 
-                alt="Travis Howard" src="/static/images/avatar/2.jpg"
-                sx={{ height:30, width:30 }}
-              />
-              <Typography variant="span" component="h3" fontSize={16} fontWeight={400}>
-                Con Doriano
-              </Typography> */}
             </UserBox>
             <TextField
               id="standard-multiline-static"

@@ -2,7 +2,7 @@ import { Box, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Switch
 import { AccountBox, Description, Group, Home, Mail, ModeNight, Person, Settings, Storefront } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
-const Sidebar = () => {
+const Sidebar = ({ mode, setMode }) => {
   const navigate = useNavigate();
   return (
     <Box flex='1' display={{xs:'none', lg:'block'}}>
@@ -69,7 +69,10 @@ const Sidebar = () => {
               <ListItemIcon>
                 <ModeNight />
               </ListItemIcon>
-              <Switch/>
+              <Switch onChange={e=>{
+                setMode(mode === "light" ? "dark" : "light")
+                }}
+              />
             </ListItemButton>
           </ListItem>
         </List>
