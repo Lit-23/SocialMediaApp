@@ -47,7 +47,7 @@ const Signin = () => {
     }
   };
   return (
-    <Box sx={{display:'flex', justifyContent:'center'}}>
+    <Box sx={{display:'flex', justifyContent:'center'}} bgcolor={"background.default"} color={"text.primary"}>
       <Card sx={{ width:'100%', maxWidth:'600px' }}>
         <CardContent>
           <Typography variant="h5" color='gray' fontWeight={300}  textAlign="center" mb={3}>

@@ -1,10 +1,10 @@
 import { Box, Stack } from '@mui/material';
 import PostCard from './PostCard';
 
-const Feed = ({ collection, loading, searchPostCollection }) => {
+const Feed = ({ collection, searchPostCollection }) => {
   return (
     <Box flex='4' display='flex' justifyContent="center">
-     <Stack spacing={3} marginBottom={10}>
+     <Stack spacing={1} marginBottom={10}>
       {
         collection &&
         collection.map((post, index) => {

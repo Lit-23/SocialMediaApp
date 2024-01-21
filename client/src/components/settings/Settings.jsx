@@ -1,5 +1,5 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { Box, Button, Card, CardContent, Divider, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack, Switch, Typography } from "@mui/material";
+import { Box, Button, Card, CardContent, Divider, FormControl, IconButton, InputAdornment, InputLabel, List, ListItem, ListItemButton, OutlinedInput, Stack, Switch, Typography } from "@mui/material";
 import { useState } from "react";
 import { useSelector } from 'react-redux';
 import Swal from "sweetalert2";
@@ -64,10 +64,6 @@ export default function Settings({ mode, setMode }) {
       setError(error.message);
       Swal.close();
     }
-  };
-
-  const handleTheme = (event) => {
-    setChecked(event.target.checked);
   };
 
   return (
@@ -135,13 +131,14 @@ export default function Settings({ mode, setMode }) {
           <Divider/>
 
           {/* Dispaly Section */}
-          <Stack direction='row'>
-            <Typography fontSize={18} fontWeight={300} mt={2} mr='auto'>Dark Mode Setting</Typography>
-              <Switch onChange={e=>{
-                setMode(mode === "light" ? "dark" : "light")
-                }}
-              />
-          </Stack>
+          <List>
+            <ListItem disablePadding>
+              <ListItemButton>
+                <Typography fontSize={18} fontWeight={300} mr='auto'>Dark Mode Setting</Typography>
+                <Switch checked={mode === 'light' ? false : true} onChange={e=>setMode(mode==="light" ? "dark" : "light")}/>
+              </ListItemButton>
+            </ListItem>
+          </List>
         </CardContent>
       </Card>
     </Box>

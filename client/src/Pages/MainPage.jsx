@@ -29,42 +29,33 @@ const MainPage = ({ mode, setMode }) => {
   };
 
   // functionality for fetching posts collection
-  const [postCollection, setPostCollection] = useState([]);
-  const { postLoading } = useSelector(state => state.post);
+  const [postCollection, setPostCollection] = useState([]);  
+  const [reversedPostCollection, setReversedPostCollection] = useState();
   const dispatch = useDispatch();
   const searchPostCollection = async () => {
     try {
       dispatch(getPostListStart());
-      if(postLoading === true) {
-        Swal.showLoading();
-      } else {
-        setTimeout(()=>Swal.close(), 500);
-      };
       const res = await fetch('/api/user/post-list', { method: 'GET' });
       const data = await res.json();
       dispatch(getPostListSuccess(data));
       setPostCollection(data);
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      });
     } catch (error) {
       dispatch(getPostListFailure(error));
       console.log('error fetching!');
     }
   };
-  useEffect(() => {
-    searchPostCollection();
-  }, []);
 
   // functionality for fetching user collection
   const { currentUser } = useSelector(state => state.user);
   const [userCollection, setUserCollection] = useState([]);
-  const { loading } = useSelector(state => state.user);
   const searchUserCollection = async () => {
     try {
       dispatch(getUserListStart());
-      if(loading === true) {
-        Swal.showLoading();
-      } else {
-        setTimeout(()=>Swal.close(), 500);
-      };
       const res = await fetch('/api/user/user-list', { method: 'GET' });
       const data = await res.json();
       dispatch(getUserListSuccess(data));
@@ -76,7 +67,13 @@ const MainPage = ({ mode, setMode }) => {
   };
   useEffect(() => {
     searchUserCollection();
+    searchPostCollection();
+    Swal.showLoading()
+    setTimeout(()=>Swal.close(), 600)
   }, []);
+  useEffect(() => {
+    setReversedPostCollection([...postCollection].reverse());
+  }, [postCollection]);
 
 
   return (
@@ -86,7 +83,7 @@ const MainPage = ({ mode, setMode }) => {
         ? <Box bgcolor={"background.default"} color={"text.primary"}>
             <Stack direction='row'>
               <Sidebar setMode={setMode} mode={mode}/>
-              <Feed collection={postCollection} loading={postLoading} searchPostCollection={searchPostCollection} />
+              <Feed collection={reversedPostCollection} searchPostCollection={searchPostCollection} />
               <Rightbar collection={userCollection}/>
             </Stack>
             <Box>

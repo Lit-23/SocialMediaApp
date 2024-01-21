@@ -1,8 +1,9 @@
 import { Avatar, Box, Button, Card, CardContent, CardMedia, Divider, IconButton, Input, InputLabel, Modal, Stack, TextField, Typography, styled } from '@mui/material';
 import { Add, Favorite, Gif, Home, Image, InsertEmoticon, LocationOn, ModeEdit, MoreHoriz, People, Place, School, Send, Work } from '@mui/icons-material';
 import { useSelector } from 'react-redux';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import PostCard from '../components/Feed/PostCard.jsx';
+import Swal from 'sweetalert2';
 
 const AvatarCard = styled(Card)({
   maxWidth: 800,
@@ -26,8 +27,10 @@ const StyledStack = styled(Box)({
 
 const ProfileFeed = styled(Box)({
   marginTop:20,
-  display: 'flex',
-  justifyContent:'center'
+  maxWidth: 600,
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  paddingBottom:20
 });
 
 const StyledModal = styled(Modal)({
@@ -64,9 +67,17 @@ function UserProfile() {
   const handleClose = () => {
     setOpen(false);
   };
+  
+  useEffect(() => {
+    // This will scroll the page to the top when the component mounts
+    window.scrollTo(0, 0);
+    // loading
+    Swal.showLoading();
+    setTimeout(()=>Swal.close(), 600);
+  }, []);
   return (
     <>
-      <Box>
+      <Box bgcolor={"background.default"} color={"text.primary"}>
 
         {/* Avatar Section Start */}
         <AvatarCard>
@@ -209,10 +220,10 @@ function UserProfile() {
 
         {/* Feed Start */}
         <ProfileFeed>
-          <Stack spacing={3} marginBottom={10}>
+          <Stack spacing={1}>
             {
               postList &&
-              postList.map((post, index) => {
+              [...postList].reverse().map((post, index) => {
                 const date = post.createdAt.slice(0, 10);
                 if(post.id === otherUser._id) {
                   return  (
@@ -220,6 +231,12 @@ function UserProfile() {
                   )
                 }
               })
+              // &&  this.parentElement.Children.length === 0
+              //   &&  <Card>
+              //         <CardContent>
+              //           <Typography variant='h6' fontWeight={400} textAlign={'center'}>No Post Yet</Typography>
+              //         </CardContent>
+              //       </Card>
             }
           </Stack>
         </ProfileFeed>

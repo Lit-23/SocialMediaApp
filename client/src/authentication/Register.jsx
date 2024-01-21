@@ -54,7 +54,7 @@ const Register = () => {
   };
 
   return (
-    <Box sx={{display:'flex', justifyContent:'center'}}>
+    <Box sx={{display:'flex', justifyContent:'center'}} bgcolor={"background.default"} color={"text.primary"}>
       <Card sx={{ width:'100%', maxWidth:'600px' }}>
       {/* xs:{margin:1}, xs:{padding:0}, sm:{margin:5}, sm:{padding:1},  */}
         <CardContent>

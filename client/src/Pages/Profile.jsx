@@ -1,5 +1,5 @@
 import { Avatar, Box, Button, Card, CardActions, CardContent, CardMedia, Divider, IconButton, Modal, Stack, TextField, Typography, styled } from '@mui/material';
-import { Add, Favorite, Gif, Home, Image, InsertEmoticon, LocationOn, ModeEdit, MoreHoriz, Place, School, Work } from '@mui/icons-material';
+import { Add, Favorite, Home, ModeEdit, Place, School, Work } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useRef, useState } from 'react';
 import Swal from "sweetalert2";
@@ -32,20 +32,16 @@ const StyledStack = styled(Box)({
 
 const ProfileFeed = styled(Box)({
   marginTop:20,
-  display: 'flex',
-  justifyContent:'center'
+  maxWidth: 600,
+  marginLeft: 'auto',
+  marginRight: 'auto',
+  paddingBottom:20
 });
 
 const StyledModal = styled(Modal)({
   display:'flex',
   alignItems:'center',
   justifyContent:'center',
-});
-
-const UserBox = styled(Box)({
-  display:'flex',
-  alignItems:'center',
-  gap:10
 });
 
 const StyledAvatar = styled(Avatar)({
@@ -198,6 +194,11 @@ function Profile() {
       });
     }
   };
+  
+  useEffect(() => {
+    // This will scroll the page to the top when the component mounts
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <>
       <Box>
@@ -351,17 +352,22 @@ function Profile() {
 
         {/* Feed Start */}
         <ProfileFeed>
-          <Stack spacing={3} marginBottom={10}>
+          <Stack spacing={1}>
             {
               postCollection &&
-              postCollection.map((post, index) => { 
-                const date = post.createdAt.slice(0, 10);
-                if(post.id === currentUser._id) {
-                  return  (
-                    <PostCard key={index} searchPostCollection={searchPostCollection} postId={post._id} userId={post.id} user={post.user} userAvatar={post.userAvatar} timestamps={date} postDescription={post.postDescription} postThumbnail={post.postThumbnail}/>
-                  )
-                }
-              })
+              [...postCollection].reverse().map((post) => { 
+                    const date = post.createdAt.slice(0, 10);
+                    if(post.id === currentUser._id) {
+                      return  (
+                        <PostCard key={post._id} searchPostCollection={searchPostCollection} postId={post._id} userId={post.id} user={post.user} userAvatar={post.userAvatar} timestamps={date} postDescription={post.postDescription} postThumbnail={post.postThumbnail}/>
+                      )
+                    }
+                  })
+                // : <Card>
+                //     <CardContent>
+                //       <Typography variant='h6' fontWeight={400} textAlign={'center'}>No Post Yet</Typography>
+                //     </CardContent>
+                //   </Card>
             }
           </Stack>
         </ProfileFeed>

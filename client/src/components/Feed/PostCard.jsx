@@ -31,7 +31,7 @@ const PostCard = ({ searchPostCollection, postId, userId, user, userAvatar, time
     setAnchorEl(null);
   };
 
-  const { currentUser, loading } = useSelector(state => state.user);
+  const { currentUser } = useSelector(state => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const searchUserById = async (event) => {
@@ -42,11 +42,6 @@ const PostCard = ({ searchPostCollection, postId, userId, user, userAvatar, time
         return;
       };
       dispatch(searchUserByIDStart());
-      if(loading){
-        Swal.showLoading()
-      } else {
-        Swal.hideLoading()
-      };
       const res = await fetch(`/api/user/search-user/${userId}`, { method: 'GET' });
       const data = await res.json();
       if(data.success===false) {
