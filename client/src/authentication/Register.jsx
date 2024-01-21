@@ -1,5 +1,5 @@
-import { Google } from "@mui/icons-material";
-import { Box, Button, Card, CardContent, Divider, Stack, TextField, Typography } from "@mui/material";
+import { Google, Visibility, VisibilityOff } from "@mui/icons-material";
+import { Box, Button, Card, CardContent, Divider, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, Stack, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -52,10 +52,16 @@ const Register = () => {
       setError(true);
     };
   };
-
+  
+  // show password functionality
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
   return (
     <Box sx={{display:'flex', justifyContent:'center'}} bgcolor={"background.default"} color={"text.primary"}>
-      <Card sx={{ width:'100%', maxWidth:'600px' }}>
+      <Card sx={{ width:'100%', maxWidth:'600px', marginBottom:20 }}>
       {/* xs:{margin:1}, xs:{padding:0}, sm:{margin:5}, sm:{padding:1},  */}
         <CardContent>
           <Typography variant="h5" color='gray' fontWeight={300}  textAlign="center" mb={3}>
@@ -91,23 +97,50 @@ const Register = () => {
                 defaultValue={formData.email}
                 onChange={handleChange}
               />
-              <TextField
-                required
-                type="password"
-                sx={{width:'100%'}}
-                id="password"
-                label="Password"
-                defaultValue={formData.password}
-                onChange={handleChange}
-              />
-              <TextField
-                type="password"
-                sx={{width:'100%'}}
-                id="confirmPassword"
-                label="Confirm Password"
-                defaultValue={formData.confirmPassword}
-                onChange={handleChange}
-              />
+              <FormControl sx={{ width: '100%' }} variant="outlined">
+                <InputLabel htmlFor="password">Password</InputLabel>
+                <OutlinedInput
+                  id="password"
+                  required
+                  onChange={handleChange}
+                  type={showPassword ? 'text' : 'password'}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Password"
+                />
+              </FormControl>
+              <FormControl sx={{ width: '100%' }} variant="outlined">
+                <InputLabel htmlFor="password">Confirm Password</InputLabel>
+                <OutlinedInput
+                  id="confirmPassword"
+                  required
+                  onChange={handleChange}
+                  type={showPassword ? 'text' : 'password'}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Confirm Password"
+                />
+              </FormControl>
               {
                 error && 
                 <Typography variant="p" color="error" marginX={5} marginBottom={3}>

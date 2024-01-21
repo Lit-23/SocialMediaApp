@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import PostCard from '../components/Feed/PostCard.jsx';
 import Swal from 'sweetalert2';
+import LitflixFeatures from '../components/litflixFeatures/LitflixFeatures.jsx';
 
 const AvatarCard = styled(Card)({
   maxWidth: 800,
@@ -123,13 +124,13 @@ function UserProfile() {
         {/* Profile Details Start */}
         <ProfileDetailsCard>
           <CardContent>
-            <Typography variant='h6' fontWeight={300} marginBottom={1}>Background</Typography>
+            <Typography variant='h6' fontWeight={400} marginBottom={1}>Background</Typography>
 
             <Stack spacing={1}>
               {
                 otherUser.bio &&
                 <>
-                  <Typography variant='p' textAlign='center'>{otherUser.bio}</Typography>
+                  <Typography variant='p' textAlign='center' fontWeight={300} fontSize={15}>{otherUser.bio}</Typography>
                   <Divider/>
                 </>
               }
@@ -231,12 +232,10 @@ function UserProfile() {
                   )
                 }
               })
-              // &&  this.parentElement.Children.length === 0
-              //   &&  <Card>
-              //         <CardContent>
-              //           <Typography variant='h6' fontWeight={400} textAlign={'center'}>No Post Yet</Typography>
-              //         </CardContent>
-              //       </Card>
+            }
+            {
+              otherUser._id === import.meta.env.VITE_LITFLIXOFFICIAL_ID 
+              && <LitflixFeatures/>
             }
           </Stack>
         </ProfileFeed>

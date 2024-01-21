@@ -86,6 +86,8 @@ function Profile() {
   }, [profilePicture, coverPhoto]);
 
   const handleUpload = async (img, formdataName, setError, setImagePercent) => {
+    setProfileError(false);
+    setCoverPhotoError(false);
     const storage = getStorage(app);
     const filename = new Date().getTime() + img.name;
     const storageRef = ref(storage, filename);
@@ -242,13 +244,13 @@ function Profile() {
         {/* Profile Details Start */}
         <ProfileDetailsCard>
           <CardContent>
-            <Typography variant='h6' fontWeight={300} marginBottom={1}>Background</Typography>
+            <Typography variant='h6' fontWeight={400} marginBottom={1}>Background</Typography>
 
             <Stack spacing={1}>
               {
                 currentUser.bio && !editingBio &&
                 <>
-                  <Typography variant='p' textAlign='center'>{currentUser.bio}</Typography>
+                  <Typography variant='p' textAlign='center' fontSize={15}>{currentUser.bio}</Typography>
                   <Button variant='outlined' onClick={()=>{setEditingBio(true)}}>Edit bio</Button>
                 </>
               }
@@ -356,18 +358,13 @@ function Profile() {
             {
               postCollection &&
               [...postCollection].reverse().map((post) => { 
-                    const date = post.createdAt.slice(0, 10);
-                    if(post.id === currentUser._id) {
-                      return  (
-                        <PostCard key={post._id} searchPostCollection={searchPostCollection} postId={post._id} userId={post.id} user={post.user} userAvatar={post.userAvatar} timestamps={date} postDescription={post.postDescription} postThumbnail={post.postThumbnail}/>
-                      )
-                    }
-                  })
-                // : <Card>
-                //     <CardContent>
-                //       <Typography variant='h6' fontWeight={400} textAlign={'center'}>No Post Yet</Typography>
-                //     </CardContent>
-                //   </Card>
+              const date = post.createdAt.slice(0, 10);
+              if(post.id === currentUser._id) {
+                return  (
+                  <PostCard key={post._id} searchPostCollection={searchPostCollection} postId={post._id} userId={post.id} user={post.user} userAvatar={post.userAvatar} timestamps={date} postDescription={post.postDescription} postThumbnail={post.postThumbnail}/>
+                )
+              }
+            })
             }
           </Stack>
         </ProfileFeed>
@@ -377,7 +374,7 @@ function Profile() {
       {/* Edit Profile Modal */}
       <StyledModal
         open={openEditProfile}
-        onClose={()=>{setOpenEditProfile(false); setFormData({}); setProfilePercent(0); setCoverPhotoPercent(0); setProfilePicture(); setCoverPhoto();}}
+        onClose={()=>{setOpenEditProfile(false); setFormData({}); setProfilePercent(0); setCoverPhotoPercent(0); setProfilePicture(); setCoverPhoto(); setProfileError(false); setCoverPhotoError(false);}}
         aria-labelledby="parent-modal-title"
         aria-describedby="parent-modal-description"
       >

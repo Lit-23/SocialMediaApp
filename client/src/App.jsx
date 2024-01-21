@@ -4,15 +4,11 @@ import Register from "./authentication/Register";
 import MainPage from "./Pages/MainPage";
 import Profile from "./Pages/Profile";
 import OtherUserProfile from "./Pages/UserProfile";
-import Settings from "./components/settings/Settings";
+import Settings from "./Pages/Settings";
 import { ThemeProvider, createTheme } from "@mui/material";
 import { useState } from "react";
-// import { useSelector } from "react-redux";
-
-// themeMode
 
 function App() {
-  // const { themeMode } = useSelector(state => state.user);
   const [mode, setMode] = useState("light");
 
   const darkTheme = createTheme({
